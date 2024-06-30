@@ -32,8 +32,6 @@ import 'package:validators/validators.dart';
 import '../../custom/loading.dart';
 import '../../repositories/address_repository.dart';
 
-
-
 class Registration extends StatefulWidget {
   @override
   _RegistrationState createState() => _RegistrationState();
@@ -66,7 +64,13 @@ class _RegistrationState extends State<Registration> {
   TextEditingController _doc1Controller = TextEditingController();
   TextEditingController _doc2Controller = TextEditingController();
   TextEditingController _doc3Controller = TextEditingController();
-
+  String gst = "";
+  String adharfront = "";
+  String adharback = "";
+  String pan = "";
+  String doc1 = "";
+  String doc2 = "";
+  String doc3 = "";
   @override
   void initState() {
     //on Splash Screen hide statusbar
@@ -96,7 +100,7 @@ class _RegistrationState extends State<Registration> {
     var password = _passwordController.text.toString();
     var password_confirm = _passwordConfirmController.text.toString();
     var shop_address = _shopaddressController.text.toString();
-    var gst = _gstController.text.toString();
+    // gst = _gstController.text.toString();
 
     if (profilePick == null) {
       ToastComponent.showDialog("Profile pick is required",
@@ -189,12 +193,12 @@ class _RegistrationState extends State<Registration> {
         shop_address,
         gst,
         profilePick!.path,
-        _adharFrontController.text,
-        _adharBackController.text,
-        _panCardController.text,
-        _doc1Controller.text,
-        _doc2Controller.text,
-        _doc3Controller.text);
+        adharfront,
+        adharback,
+        pan,
+        doc1,
+        doc2,
+        doc3);
     Loading.close();
 
     if (signupResponse.result == false) {
@@ -314,48 +318,73 @@ class _RegistrationState extends State<Registration> {
       print(profilePick!.path);
     });
   }
- onTapGST()async{
-    await pickSingleFile().then((value){if(value!=null) _gstController.text = value.paths.first??"";});
+
+  onTapGST() async {
+    await pickSingleFile().then((value) {
+      if (value != null) {
+        gst = value.paths.first ?? "";
+        _gstController.text = gst.split("/").last;
+      }
+    });
     setState(() {});
- }
+  }
+
   onTapAdharFront() async {
     await pickSingleFile().then((value) {
-      if (value != null) _adharFrontController.text = value.paths.first ?? "";
+      if (value != null) {
+        adharfront = value.paths.first ?? "";
+        _adharFrontController.text = adharfront.split("/").last;
+      }
     });
     setState(() {});
   }
 
   onTapAdharBack() async {
     await pickSingleFile().then((value) {
-      if (value != null) _adharBackController.text = value.paths.first ?? "";
+      if (value != null) {
+        adharback = value.paths.first ?? "";
+        _adharBackController.text = adharback.split("/").last;
+      }
     });
     setState(() {});
   }
 
   onTapPan() async {
     await pickSingleFile().then((value) {
-      if (value != null) _panCardController.text = value.paths.first ?? "";
+      if (value != null) {
+        pan = value.paths.first ?? "";
+        _panCardController.text = pan.split("/").last;
+      }
     });
     setState(() {});
   }
 
   onTapDoc1() async {
     await pickSingleFile().then((value) {
-      if (value != null) _doc1Controller.text = value.paths.first ?? "";
+      if (value != null) {
+        doc1 = value.paths.first ?? "";
+        _doc1Controller.text = doc1.split("/").last;
+      }
     });
     setState(() {});
   }
 
   onTapDoc2() async {
     await pickSingleFile().then((value) {
-      if (value != null) _doc2Controller.text = value.paths.first ?? "";
+      if (value != null) {
+        doc2 = value.paths.first ?? "";
+        _doc2Controller.text = doc2.split("/").last;
+      }
     });
     setState(() {});
   }
 
   onTapDoc3() async {
     await pickSingleFile().then((value) {
-      if (value != null) _doc3Controller.text = value.paths.first ?? "";
+      if (value != null) {
+        doc3 = value.paths.first ?? "";
+        _doc3Controller.text = doc3.split("/").last;
+      }
     });
     setState(() {});
   }
