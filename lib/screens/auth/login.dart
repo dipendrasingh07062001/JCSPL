@@ -115,6 +115,7 @@ class _LoginState extends State<Login> {
       ToastComponent.showDialog(loginResponse.message!,
           gravity: Toast.center, duration: Toast.lengthLong);
       AuthHelper().setUserData(loginResponse);
+      context.push("/");
       // push notification starts
       if (OtherConfig.USE_PUSH_NOTIFICATION) {
         final FirebaseMessaging _fcm = FirebaseMessaging.instance;
@@ -140,7 +141,6 @@ class _LoginState extends State<Login> {
           }
         }
       }
-      context.push("/");
     }
   }
 

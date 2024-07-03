@@ -58,10 +58,11 @@ class _IndexState extends State<Index> {
     SystemConfig.context ??= context;
     return Scaffold(
       body: SystemConfig.isShownSplashScreed
-          ?Registration()
-      // Main(
-      //         go_back: widget.goBack,
-      //       )
+          ? SystemConfig.systemUser == null
+              ? Registration()
+              : Main(
+                  go_back: widget.goBack,
+                )
           : SplashScreen(),
     );
   }

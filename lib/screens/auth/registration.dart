@@ -200,7 +200,7 @@ class _RegistrationState extends State<Registration> {
         doc2,
         doc3);
     Loading.close();
-
+    print("api done");
     if (signupResponse.result == false) {
       var message = "";
       signupResponse.message.forEach((value) {

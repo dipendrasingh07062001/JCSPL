@@ -242,7 +242,7 @@ class _ProfileState extends State<Profile> {
 
   PreferredSize buildCustomAppBar(context) {
     return PreferredSize(
-      preferredSize: Size(DeviceInfo(context).width!, 80),
+      preferredSize: Size(DeviceInfo(context).width!, 120),
       child: Container(
         // color: Colors.green,
         child: SafeArea(
@@ -1432,7 +1432,7 @@ class _ProfileState extends State<Profile> {
     return Container(
       // color: Colors.amber,
       alignment: Alignment.center,
-      height: 48,
+      height: 78,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -1484,11 +1484,13 @@ class _ProfileState extends State<Profile> {
                   borderRadius: BorderRadius.circular(6),
                   side: BorderSide(color: MyTheme.white)),
               child: Text(
+
                 is_logged_in.$
                     ? AppLocalizations.of(context)!.logout_ucf
                     : LangText(context).local.login_ucf,
                 style: TextStyle(
                     color: Colors.white,
+
                     fontSize: 10,
                     fontWeight: FontWeight.w500),
               ),
@@ -1507,28 +1509,32 @@ class _ProfileState extends State<Profile> {
 
   Widget buildUserInfo() {
     return is_logged_in.$
-        ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "${user_name.$}",
-                style: TextStyle(
-                    fontSize: 14,
-                    color: MyTheme.white,
-                    fontWeight: FontWeight.w600),
-              ),
-              Padding(
-                  padding: const EdgeInsets.only(top: 4.0),
-                  child: Text(
-                    //if user email is not available then check user phone if user phone is not available use empty string
-                    "${user_email.$ != "" ? user_email.$ : user_phone.$ != "" ? user_phone.$ : ''}",
-                    style: TextStyle(
-                      color: MyTheme.light_grey,
-                    ),
-                  )),
-            ],
-          )
+        ? Expanded(
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "${user_name.$}",
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: MyTheme.white,
+                      fontWeight: FontWeight.w600),
+                ),
+                Padding(
+                    padding: const EdgeInsets.only(top: 4.0),
+                    child: Text(
+          
+                      //if user email is not available then check user phone if user phone is not available use empty string
+                      "${user_email.$ != "" ? user_email.$ : user_phone.$ != "" ? user_phone.$ : ''}",
+                      maxLines: 3,style: TextStyle(
+                        color: MyTheme.light_grey,
+                      overflow: TextOverflow.visible
+                      ),
+                    )),
+              ],
+            ),
+        )
         : Text(
             LangText(context).local.login_or_reg,
             style: TextStyle(

@@ -58,7 +58,7 @@ dependencies:
   cached_network_image: ^3.1.0
   timeline_tile: ^2.0.0
   shared_value: ^3.0.0
-  rename: ^2.0.1
+  rename: ^3.0.2
   permission_handler: ^10.2.0
   image_picker: ^0.8.4+2
   flutter_facebook_auth: 

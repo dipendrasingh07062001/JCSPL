@@ -153,12 +153,8 @@ class AuthRepository {
     var request = http.MultipartRequest("POST", uri);
     request.headers.addAll(headerMap);
     request.fields.addAll(post_body);
-    print("first");
     request.files.addAll(files);
-    print("second");
-
     var res = await request.send();
-    print("fourth");
     var response = await res.stream.bytesToString();
     print(response);
     // final response = await ApiRequest.postmultipart(
