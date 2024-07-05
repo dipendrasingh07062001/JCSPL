@@ -34,6 +34,7 @@ class AuthRepository {
           "App-Language": app_language.$!,
         },
         body: post_body);
+    print(response.body);
 
     return loginResponseFromJson(response.body);
   }
@@ -123,22 +124,21 @@ class AuthRepository {
 
     String url = ("${AppConfig.BASE_URL}/auth/signup");
     List<http.MultipartFile> files = [
-
-      http.MultipartFile.fromString("profile_image", image,
+      await http.MultipartFile.fromPath("profile_image", image,
           filename: image.split("/").last),
-      http.MultipartFile.fromString("adhar_front", image,
+      await http.MultipartFile.fromPath("adhar_front", image,
           filename: adharFront.split("/").last),
-      http.MultipartFile.fromString("adhar_back", image,
+      await http.MultipartFile.fromPath("adhar_back", image,
           filename: adharBack.split("/").last),
-      http.MultipartFile.fromString("pan_card", image,
+      await http.MultipartFile.fromPath("pan_card", image,
           filename: pan.split("/").last),
-      http.MultipartFile.fromString("company_one", image,
+      await http.MultipartFile.fromPath("company_one", image,
           filename: doc1.split("/").last),
-      http.MultipartFile.fromString("company_two", image,
+      await http.MultipartFile.fromPath("company_two", image,
           filename: doc2.split("/").last),
-      http.MultipartFile.fromString("company_three", image,
+      await http.MultipartFile.fromPath("company_three", image,
           filename: doc3.split("/").last),
-      http.MultipartFile.fromString("gst_number", gst,
+      await http.MultipartFile.fromPath("gst_number", gst,
           filename: gst.split("/").last),
     ];
     Uri uri = Uri.parse(url);

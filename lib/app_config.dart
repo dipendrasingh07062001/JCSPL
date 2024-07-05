@@ -2,7 +2,7 @@ var this_year = DateTime.now().year.toString();
 
 class AppConfig {
   static String copyright_text =
-      "@ ActiveItZone " + this_year; //this shows in the splash screen
+      "@ JCSPL " + this_year; //this shows in the splash screen
   static String app_name = "JCSPL"; //this shows in the splash screen
 
   static String purchase_code =
