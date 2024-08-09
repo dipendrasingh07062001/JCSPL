@@ -1461,7 +1461,7 @@ class _ProfileState extends State<Profile> {
                       borderRadius: BorderRadius.all(Radius.circular(100.0)),
                       child: FadeInImage.assetNetwork(
                         placeholder: 'assets/placeholder.png',
-                        image: "${avatar_original.$}",
+                        image: "${profile_image.$}",
                         fit: BoxFit.fill,
                       ))
                   : Image.asset(

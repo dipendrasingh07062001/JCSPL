@@ -4,7 +4,8 @@
 
 import 'dart:convert';
 
-LoginResponse loginResponseFromJson(String str) => LoginResponse.fromJson(json.decode(str));
+LoginResponse loginResponseFromJson(String str) =>
+    LoginResponse.fromJson(json.decode(str));
 
 String loginResponseToJson(LoginResponse data) => json.encode(data.toJson());
 
@@ -26,22 +27,25 @@ class LoginResponse {
   User? user;
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) => LoginResponse(
-    result: json["result"],
-    message: json["message"],
-    access_token: json["access_token"] == null ? null : json["access_token"],
-    token_type: json["token_type"] == null ? null : json["token_type"],
-    expires_at: json["expires_at"] == null ? null : DateTime.parse(json["expires_at"]),
-    user: json["user"] == null ? null : User.fromJson(json["user"]),
-  );
+        result: json["result"],
+        message: json["message"],
+        access_token:
+            json["access_token"] == null ? null : json["access_token"],
+        token_type: json["token_type"] == null ? null : json["token_type"],
+        expires_at: json["expires_at"] == null
+            ? null
+            : DateTime.parse(json["expires_at"]),
+        user: json["user"] == null ? null : User.fromJson(json["user"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "result": result,
-    "message": message,
-    "access_token": access_token == null ? null : access_token,
-    "token_type": token_type == null ? null : token_type,
-    "expires_at": expires_at == null ? null : expires_at!.toIso8601String(),
-    "user": user == null ? null : user!.toJson(),
-  };
+        "result": result,
+        "message": message,
+        "access_token": access_token == null ? null : access_token,
+        "token_type": token_type == null ? null : token_type,
+        "expires_at": expires_at == null ? null : expires_at!.toIso8601String(),
+        "user": user == null ? null : user!.toJson(),
+      };
 }
 
 class User {
@@ -52,7 +56,9 @@ class User {
     this.email,
     this.avatar,
     this.avatar_original,
-    this.phone, this.emailVerified,
+    this.phone,
+    this.emailVerified,
+    this.profile_image,
   });
 
   int? id;
@@ -62,27 +68,30 @@ class User {
   String? avatar;
   String? avatar_original;
   String? phone;
-  bool?emailVerified;
+  bool? emailVerified;
+  String? profile_image;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-    id: json["id"],
-    type: json["type"],
-    name: json["name"],
-    email: json["email"],
-    avatar: json["avatar"],
-    avatar_original: json["avatar_original"],
-    phone: json["phone"],
-    emailVerified: json["email_verified"],
-  );
+        id: json["id"],
+        type: json["type"],
+        name: json["name"],
+        email: json["email"],
+        avatar: json["avatar"],
+        avatar_original: json["avatar_original"],
+        phone: json["phone"],
+        emailVerified: json["email_verified"],
+    profile_image:json["profile_image"]??""
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "type": type,
-    "name": name,
-    "email": email,
-    "avatar": avatar,
-    "avatar_original": avatar_original,
-    "phone": phone,
-    "email_verified": emailVerified,
-  };
+        "id": id,
+        "type": type,
+        "name": name,
+        "email": email,
+        "avatar": avatar,
+        "avatar_original": avatar_original,
+        "phone": phone,
+        "email_verified": emailVerified,
+    "profile_image":profile_image,
+      };
 }

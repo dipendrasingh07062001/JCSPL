@@ -25,6 +25,10 @@ final SharedValue<String?> avatar_original = SharedValue(
   value: "", // initial value
   key: "avatar_original", // disk storage key for shared_preferences
 );
+final SharedValue<String?> profile_image = SharedValue(
+  value: "", // initial value
+  key: "profile_image", // disk storage key for shared_preferences
+);
 
 final SharedValue<String?> user_name = SharedValue(
   value: "", // initial value

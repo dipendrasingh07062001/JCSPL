@@ -610,32 +610,26 @@ class _ShippingInfoState extends State<ShippingInfo> {
   BottomAppBar buildBottomAppBar(BuildContext context) {
     return BottomAppBar(
       child: Container(
-        color: Colors.transparent,
-        height: 50,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Btn.minWidthFixHeight(
-              minWidth: MediaQuery.of(context).size.width,
-              height: 50,
-              color: MyTheme.accent_color,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(0.0),
-              ),
-              child: Text(
-                AppLocalizations.of(context)!.proceed_to_checkout,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600),
-              ),
-              onPressed: () {
-                onPressProceed(context);
-              },
-            )
-          ],
-        ),
-      ),
+          color: Colors.transparent,
+          height: 50,
+          child: Btn.minWidthFixHeight(
+            minWidth: MediaQuery.of(context).size.width,
+            height: 50,
+            color: MyTheme.accent_color,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(0.0),
+            ),
+            child: Text(
+              AppLocalizations.of(context)!.proceed_to_checkout,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600),
+            ),
+            onPressed: () {
+              onPressProceed(context);
+            },
+          )),
     );
   }
 
@@ -929,7 +923,7 @@ class _ShippingInfoState extends State<ShippingInfo> {
               Padding(
                 padding: const EdgeInsets.only(top: 18.0),
                 child: Text(
-                  LangText(context).local!.choose_delivery_ucf,
+                  LangText(context).local.choose_delivery_ucf,
                   style: TextStyle(
                       color: MyTheme.dark_font_grey,
                       fontWeight: FontWeight.w700,

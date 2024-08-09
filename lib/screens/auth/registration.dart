@@ -45,26 +45,37 @@ class _RegistrationState extends State<Registration> {
   var countries_code = <String?>[];
 
   String? _phone = "";
+  String? _whatsappNo = "";
+
   bool? _isAgree = false;
   bool _isCaptchaShowing = false;
   String googleRecaptchaKey = "";
   File? profilePick;
+  bool isindividual = true;
+  String businessType = "Distributorship";
 
   //controllers
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _phoneNumberController = TextEditingController();
+  TextEditingController _whatsappNumberController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _passwordConfirmController = TextEditingController();
   TextEditingController _shopaddressController = TextEditingController();
+  TextEditingController _businessNameController = TextEditingController();
   TextEditingController _gstController = TextEditingController();
+  TextEditingController _gstPhotoController = TextEditingController();
+  TextEditingController _businessPhotoController = TextEditingController();
+  TextEditingController _businessImageController = TextEditingController();
   TextEditingController _adharFrontController = TextEditingController();
   TextEditingController _adharBackController = TextEditingController();
   TextEditingController _panCardController = TextEditingController();
   TextEditingController _doc1Controller = TextEditingController();
   TextEditingController _doc2Controller = TextEditingController();
   TextEditingController _doc3Controller = TextEditingController();
-  String gst = "";
+  String businessPhoto = "";
+  String businessImage = "";
+  String gstPhoto = "";
   String adharfront = "";
   String adharback = "";
   String pan = "";
@@ -94,24 +105,43 @@ class _RegistrationState extends State<Registration> {
     super.dispose();
   }
 
+  onPressregistrationtype() {
+    profilePick = null;
+    _nameController.clear();
+    _emailController.clear();
+    _passwordController.clear();
+    _passwordConfirmController.clear();
+    _whatsappNumberController.clear();
+    _adharBackController.clear();
+    _adharFrontController.clear();
+    _panCardController.clear();
+    _shopaddressController.clear();
+    _businessPhotoController.clear();
+    _businessImageController.clear();
+    _businessNameController.clear();
+    _gstController.clear();
+    _gstPhotoController.clear();
+  }
+
   onPressSignUp() async {
     var name = _nameController.text.toString();
-    var email = _emailController.text.toString();
+    var email = _emailController.text.trim();
     var password = _passwordController.text.toString();
     var password_confirm = _passwordConfirmController.text.toString();
     var shop_address = _shopaddressController.text.toString();
     // gst = _gstController.text.toString();
-
     if (profilePick == null) {
       ToastComponent.showDialog("Profile pick is required",
           gravity: Toast.center, duration: Toast.lengthLong);
 
       return;
-    } else if (name == "") {
+    }
+    if (name == "") {
       ToastComponent.showDialog(AppLocalizations.of(context)!.enter_your_name,
           gravity: Toast.center, duration: Toast.lengthLong);
       return;
-    } else if (_register_by == 'email' && (email == "" || !isEmail(email))) {
+    }
+    if (_register_by == 'email' && (email == "" || !isEmail(email))) {
       ToastComponent.showDialog(AppLocalizations.of(context)!.enter_email,
           gravity: Toast.center, duration: Toast.lengthLong);
 
@@ -123,19 +153,22 @@ class _RegistrationState extends State<Registration> {
           duration: Toast.lengthLong);
 
       return;
-    } else if (password == "") {
+    }
+    if (password == "") {
       ToastComponent.showDialog(AppLocalizations.of(context)!.enter_password,
           gravity: Toast.center, duration: Toast.lengthLong);
 
       return;
-    } else if (password_confirm == "") {
+    }
+    if (password_confirm == "") {
       ToastComponent.showDialog(
           AppLocalizations.of(context)!.confirm_your_password,
           gravity: Toast.center,
           duration: Toast.lengthLong);
 
       return;
-    } else if (password.length < 6) {
+    }
+    if (password.length < 6) {
       ToastComponent.showDialog(
           AppLocalizations.of(context)!
               .password_must_contain_at_least_6_characters,
@@ -143,108 +176,179 @@ class _RegistrationState extends State<Registration> {
           duration: Toast.lengthLong);
 
       return;
-    } else if (password != password_confirm) {
+    }
+    if (password != password_confirm) {
       ToastComponent.showDialog(
           AppLocalizations.of(context)!.passwords_do_not_match,
           gravity: Toast.center,
           duration: Toast.lengthLong);
 
       return;
-    } else if (shop_address.isEmpty) {
-      ToastComponent.showDialog(
-          AppLocalizations.of(context)!.shop_address_is_required,
-          gravity: Toast.center,
-          duration: Toast.lengthLong);
-
-      return;
-    } else if (gst.isEmpty) {
-      ToastComponent.showDialog("GST is required",
-          gravity: Toast.center, duration: Toast.lengthLong);
-
-      return;
-    } else if (_adharFrontController.text.isEmpty ||
-        _adharBackController.text.isEmpty) {
-      ToastComponent.showDialog("Adhar card is required",
-          gravity: Toast.center, duration: Toast.lengthLong);
-
-      return;
-    } else if (_panCardController.text.isEmpty) {
-      ToastComponent.showDialog("Pan card is required",
-          gravity: Toast.center, duration: Toast.lengthLong);
-
-      return;
-    } else if (_doc1Controller.text.isEmpty ||
-        _doc2Controller.text.isEmpty ||
-        _doc3Controller.text.isEmpty) {
-      ToastComponent.showDialog("Company Document are required",
+    }
+    if (_whatsappNo == "") {
+      ToastComponent.showDialog("Enter Whatsapp Number",
           gravity: Toast.center, duration: Toast.lengthLong);
 
       return;
     }
-    Loading.show(context);
-
-    var signupResponse = await AuthRepository().getSignupResponse(
-        name,
-        _register_by == 'email' ? email : _phone,
-        password,
-        password_confirm,
-        _register_by,
-        googleRecaptchaKey,
-        shop_address,
-        gst,
-        profilePick!.path,
-        adharfront,
-        adharback,
-        pan,
-        doc1,
-        doc2,
-        doc3);
-    Loading.close();
-    print("api done");
-    if (signupResponse.result == false) {
-      var message = "";
-      signupResponse.message.forEach((value) {
-        message += value + "\n";
-      });
-
-      ToastComponent.showDialog(message, gravity: Toast.center, duration: 3);
-    } else {
-      ToastComponent.showDialog(signupResponse.message,
+    if (_whatsappNo!.length < 10) {
+      ToastComponent.showDialog("Enter complete Whatsapp Number",
           gravity: Toast.center, duration: Toast.lengthLong);
-      AuthHelper().setUserData(signupResponse);
 
-      // redirect to main
-      // Navigator.pushAndRemoveUntil(context,
-      //     MaterialPageRoute(builder: (context) {
-      //       return Main();
-      //     }), (newRoute) => false);
-      context.go("/");
+      return;
+    }
+    if (isindividual) {
+      //     if (shop_address.isEmpty) {
+      //   ToastComponent.showDialog(
+      //       AppLocalizations.of(context)!.shop_address_is_required,
+      //       gravity: Toast.center,
+      //       duration: Toast.lengthLong);
+      //
+      //   return;
+      // }
+      //     if (gst.isEmpty) {
+      //   ToastComponent.showDialog("GST is required",
+      //       gravity: Toast.center, duration: Toast.lengthLong);
+      //
+      //   return;
+      // }
+      if (_adharFrontController.text.isEmpty ||
+          _adharBackController.text.isEmpty) {
+        ToastComponent.showDialog("Adhar card is required",
+            gravity: Toast.center, duration: Toast.lengthLong);
 
-      // push notification starts
-      if (OtherConfig.USE_PUSH_NOTIFICATION) {
-        final FirebaseMessaging _fcm = FirebaseMessaging.instance;
-        await _fcm.requestPermission(
-          alert: true,
-          announcement: false,
-          badge: true,
-          carPlay: false,
-          criticalAlert: false,
-          provisional: false,
-          sound: true,
-        );
-
-        String? fcmToken = await _fcm.getToken();
-
-        if (fcmToken != null) {
-          print("--fcm token--");
-          print(fcmToken);
-          if (is_logged_in.$ == true) {
-            // update device token
-            var deviceTokenUpdateResponse = await ProfileRepository()
-                .getDeviceTokenUpdateResponse(fcmToken);
-          }
-        }
+        return;
       }
+
+      //   if (_panCardController.text.isEmpty) {
+      //   ToastComponent.showDialog("Pan card is required",
+      //       gravity: Toast.center, duration: Toast.lengthLong);
+      //
+      //   return;
+      // }
+      //   else if (_doc1Controller.text.isEmpty ||
+      //     _doc2Controller.text.isEmpty ||
+      //     _doc3Controller.text.isEmpty) {
+      //   ToastComponent.showDialog("Company Document are required",
+      //       gravity: Toast.center, duration: Toast.lengthLong);
+      //
+      //   return;
+      // }
+      Loading.show(context);
+
+      await AuthRepository().getSignupResponse(context,
+          name: name,
+          email_or_phone: _register_by == 'email' ? email : _phone,
+          registration_type: "individual",
+          password: password,
+          passowrd_confirmation: password_confirm,
+          register_by: _register_by,
+          business_type: businessType,
+          capchaKey: googleRecaptchaKey,
+          shop_address: shop_address,
+          whatsappNummber: _whatsappNo!,
+          // gst: gst,
+          image: profilePick!.path,
+          adharFront: adharfront,
+          adharBack: adharback,
+          pan: pan);
+
+      // context.go("/");
+
+      // if ((mail_verification_status.$ && _register_by == "email") ||
+      //     _register_by == "phone") {
+      //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+      //     return Otp(
+      //       verify_by: _register_by,
+      //       user_id: signupResponse.user_id,
+      //     );
+      //   }));
+      // } else {
+      //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+      //     return Login();
+      //   }));
+      // }
+    } else {
+      if (shop_address.isEmpty) {
+        ToastComponent.showDialog("Business address is required.",
+            gravity: Toast.center, duration: Toast.lengthLong);
+
+        return;
+      }
+      if (_businessNameController.text.isEmpty) {
+        ToastComponent.showDialog("Business Name is required.",
+            gravity: Toast.center, duration: Toast.lengthLong);
+
+        return;
+      }
+      if (_businessPhotoController.text.isEmpty) {
+        ToastComponent.showDialog("Business Photo is required.",
+            gravity: Toast.center, duration: Toast.lengthLong);
+
+        return;
+      }
+      // if (_businessImageController.text.isEmpty) {
+      //   ToastComponent.showDialog("Business Image is required.",
+      //       gravity: Toast.center, duration: Toast.lengthLong);
+
+      //   return;
+      // }
+      //     if (gst.isEmpty) {
+      //   ToastComponent.showDialog("GST is required",
+      //       gravity: Toast.center, duration: Toast.lengthLong);
+      //
+      //   return;
+      // }
+      // if (_adharFrontController.text.isEmpty ||
+      //     _adharBackController.text.isEmpty) {
+      //   ToastComponent.showDialog("Adhar card is required",
+      //       gravity: Toast.center, duration: Toast.lengthLong);
+      //
+      //   return;
+      // }
+      if (_panCardController.text.isEmpty) {
+        ToastComponent.showDialog("Pan card is required",
+            gravity: Toast.center, duration: Toast.lengthLong);
+
+        return;
+      }
+      //   else if (_doc1Controller.text.isEmpty ||
+      //     _doc2Controller.text.isEmpty ||
+      //     _doc3Controller.text.isEmpty) {
+      //   ToastComponent.showDialog("Company Document are required",
+      //       gravity: Toast.center, duration: Toast.lengthLong);
+
+      //   return;
+      // }
+      Loading.show(context);
+
+      await AuthRepository()
+          .getSignupResponse(context,
+              name: name,
+              email_or_phone: _register_by == 'email' ? email : _phone,
+              registration_type: "business",
+              password: password,
+              passowrd_confirmation: password_confirm,
+              register_by: _register_by,
+              capchaKey: googleRecaptchaKey,
+              shop_address: shop_address,
+              whatsappNummber: _whatsappNo!,
+              business_type: businessType,
+              businessName: _businessNameController.text,
+              // businessImage: businessImage,
+              businessPhoto: businessPhoto,
+              gst: _gstController.text,
+              gstPhoto: gstPhoto,
+              image: profilePick!.path,
+              adharFront: adharfront,
+              adharBack: adharback,
+              pan: pan)
+          .onError((e, _) {
+        Loading.close();
+        ToastComponent.showDialog(e.toString(),
+            gravity: Toast.center, duration: 3);
+        return Future.error([]);
+      });
 
       // context.go("/");
 
@@ -322,8 +426,8 @@ class _RegistrationState extends State<Registration> {
   onTapGST() async {
     await pickSingleFile().then((value) {
       if (value != null) {
-        gst = value.paths.first ?? "";
-        _gstController.text = gst.split("/").last;
+        gstPhoto = value.paths.first ?? "";
+        _gstPhotoController.text = gstPhoto.split("/").last;
       }
     });
     setState(() {});
@@ -354,6 +458,26 @@ class _RegistrationState extends State<Registration> {
       if (value != null) {
         pan = value.paths.first ?? "";
         _panCardController.text = pan.split("/").last;
+      }
+    });
+    setState(() {});
+  }
+
+  onTapBuisnessPhoto() async {
+    await pickSingleFile().then((value) {
+      if (value != null) {
+        businessPhoto = (value.paths.first ?? "");
+        _businessPhotoController.text = businessPhoto.split("/").last;
+      }
+    });
+    setState(() {});
+  }
+
+  onTapBuisnessImage() async {
+    await pickSingleFile().then((value) {
+      if (value != null) {
+        businessImage = (value.paths.first ?? "");
+        _businessImageController.text = businessImage.split("/").last;
       }
     });
     setState(() {});
@@ -436,194 +560,782 @@ class _RegistrationState extends State<Registration> {
             ),
           ),
         ),
-        Container(
-          width: _screen_width * (3 / 4),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        // Container(
+        //   width: _screen_width * (3 / 4),
+        //   child: Column(
+        //     crossAxisAlignment: CrossAxisAlignment.start,
+        //     children: [
+        //       Padding(
+        //         padding: const EdgeInsets.only(bottom: 4.0),
+        //         child: Text(
+        //           AppLocalizations.of(context)!.name_ucf,
+        //           style: TextStyle(
+        //               color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsets.only(bottom: 8.0),
+        //         child: Container(
+        //           height: 36,
+        //           child: TextField(
+        //             controller: _nameController,
+        //             autofocus: false,
+        //             decoration: InputDecorations.buildInputDecoration_1(
+        //                 hint_text: "John Doe"),
+        //           ),
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsets.only(bottom: 4.0),
+        //         child: Text(
+        //           AppLocalizations.of(context)!.email_ucf,
+        //           style: TextStyle(
+        //               color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+        //         ),
+        //       ),
+        //       if (_register_by == "email")
+        //         Padding(
+        //           padding: const EdgeInsets.only(bottom: 8.0),
+        //           child: Column(
+        //             crossAxisAlignment: CrossAxisAlignment.end,
+        //             children: [
+        //               Container(
+        //                 height: 36,
+        //                 child: TextField(
+        //                   controller: _emailController,
+        //                   autofocus: false,
+        //                   decoration: InputDecorations.buildInputDecoration_1(
+        //                       hint_text: "johndoe@example.com"),
+        //                 ),
+        //               ),
+        //               otp_addon_installed.$
+        //                   ? GestureDetector(
+        //                       onTap: () {
+        //                         setState(() {
+        //                           _register_by = "phone";
+        //                         });
+        //                       },
+        //                       child: Text(
+        //                         AppLocalizations.of(context)!
+        //                             .or_register_with_a_phone,
+        //                         style: TextStyle(
+        //                             color: MyTheme.accent_color,
+        //                             fontStyle: FontStyle.italic,
+        //                             decoration: TextDecoration.underline),
+        //                       ),
+        //                     )
+        //                   : Container()
+        //             ],
+        //           ),
+        //         )
+        //       else
+        //         // Padding(
+        //         //   padding: const EdgeInsets.only(bottom: 4.0),
+        //         //   child: Text(
+        //         //     AppLocalizations.of(context)!.phone_ucf,
+        //         //     style: TextStyle(
+        //         //         color: MyTheme.accent_color,
+        //         //         fontWeight: FontWeight.w600),
+        //         //   ),
+        //         // ),
+        //         // else
+        //         Padding(
+        //           padding: const EdgeInsets.only(bottom: 8.0),
+        //           child: Column(
+        //             crossAxisAlignment: CrossAxisAlignment.end,
+        //             children: [
+        //               Container(
+        //                 height: 36,
+        //                 child: CustomInternationalPhoneNumberInput(
+        //                   countries: countries_code,
+        //                   maxLength: 10,
+        //                   onInputChanged: (PhoneNumber number) {
+        //                     print(number.phoneNumber);
+        //                     setState(() {
+        //                       _phone = number.phoneNumber;
+        //                     });
+        //                   },
+        //                   onInputValidated: (bool value) {
+        //                     print(value);
+        //                   },
+        //                   selectorConfig: SelectorConfig(
+        //                     selectorType: PhoneInputSelectorType.DIALOG,
+        //                   ),
+        //                   ignoreBlank: false,
+        //                   autoValidateMode: AutovalidateMode.disabled,
+        //                   selectorTextStyle:
+        //                       TextStyle(color: MyTheme.font_grey),
+        //                   initialValue: countries_code.isEmpty
+        //                       ? null
+        //                       : PhoneNumber(
+        //                           isoCode: countries_code[0].toString()),
+        //                   textFieldController: _phoneNumberController,
+        //                   formatInput: false,
+        //                   keyboardType: TextInputType.numberWithOptions(
+        //                       signed: true, decimal: true),
+        //                   inputDecoration:
+        //                       InputDecorations.buildInputDecoration_phone(
+        //                           hint_text: "01XXX XXXXX"),
+        //                   onSaved: (PhoneNumber number) {
+        //                     //print('On Saved: $number');
+        //                   },
+        //                 ),
+        //               ),
+        //               GestureDetector(
+        //                 onTap: () {
+        //                   setState(() {
+        //                     _register_by = "email";
+        //                   });
+        //                 },
+        //                 child: Text(
+        //                   AppLocalizations.of(context)!
+        //                       .or_register_with_an_email,
+        //                   style: TextStyle(
+        //                       color: MyTheme.accent_color,
+        //                       fontStyle: FontStyle.italic,
+        //                       decoration: TextDecoration.underline),
+        //                 ),
+        //               )
+        //             ],
+        //           ),
+        //         ),
+        //       Padding(
+        //         padding: const EdgeInsets.only(bottom: 4.0),
+        //         child: Text(
+        //           AppLocalizations.of(context)!.password_ucf,
+        //           style: TextStyle(
+        //               color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsets.only(bottom: 8.0),
+        //         child: Column(
+        //           crossAxisAlignment: CrossAxisAlignment.end,
+        //           children: [
+        //             Container(
+        //               height: 36,
+        //               child: TextField(
+        //                 controller: _passwordController,
+        //                 autofocus: false,
+        //                 obscureText: true,
+        //                 enableSuggestions: false,
+        //                 autocorrect: false,
+        //                 decoration: InputDecorations.buildInputDecoration_1(
+        //                     hint_text: "• • • • • • • •"),
+        //               ),
+        //             ),
+        //             Text(
+        //               AppLocalizations.of(context)!
+        //                   .password_must_contain_at_least_6_characters,
+        //               style: TextStyle(
+        //                   color: MyTheme.textfield_grey,
+        //                   fontStyle: FontStyle.italic),
+        //             )
+        //           ],
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsets.only(bottom: 4.0),
+        //         child: Text(
+        //           AppLocalizations.of(context)!.retype_password_ucf,
+        //           style: TextStyle(
+        //               color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsets.only(bottom: 8.0),
+        //         child: Container(
+        //           height: 36,
+        //           child: TextField(
+        //             controller: _passwordConfirmController,
+        //             autofocus: false,
+        //             obscureText: true,
+        //             enableSuggestions: false,
+        //             autocorrect: false,
+        //             decoration: InputDecorations.buildInputDecoration_1(
+        //                 hint_text: "• • • • • • • •"),
+        //           ),
+        //         ),
+        //       ),
+        //       if (google_recaptcha.$)
+        //         Container(
+        //           height: _isCaptchaShowing ? 350 : 50,
+        //           width: 300,
+        //           child: Captcha(
+        //             (keyValue) {
+        //               googleRecaptchaKey = keyValue;
+        //               setState(() {});
+        //             },
+        //             handleCaptcha: (data) {
+        //               if (_isCaptchaShowing.toString() != data) {
+        //                 _isCaptchaShowing = data;
+        //                 setState(() {});
+        //               }
+        //             },
+        //             isIOS: Platform.isIOS,
+        //           ),
+        //         ),
+        //       Padding(
+        //         padding: const EdgeInsets.only(bottom: 4.0),
+        //         child: Text(
+        //           AppLocalizations.of(context)!.shop_address,
+        //           style: TextStyle(
+        //               color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsets.only(bottom: 8.0),
+        //         child: Container(
+        //           height: 36,
+        //           child: TextField(
+        //             controller: _shopaddressController,
+        //             autofocus: false,
+        //             decoration: InputDecorations.buildInputDecoration_1(
+        //                 hint_text: "Business Address"),
+        //           ),
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsets.only(bottom: 4.0),
+        //         child: Text(
+        //           "GST Number",
+        //           // AppLocalizations.of(context)!.gst_number,
+        //           style: TextStyle(
+        //               color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsets.only(bottom: 8.0),
+        //         child: Container(
+        //           height: 36,
+        //           child: TextField(
+        //             onTap: onTapGST,
+        //             controller: _gstController,
+        //             textCapitalization: TextCapitalization.characters,
+        //             readOnly: true,
+        //             autofocus: false,
+        //             decoration: InputDecorations.buildInputDecoration_1(
+        //                 hint_text: "GST Number"),
+        //           ),
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsets.only(bottom: 4.0),
+        //         child: Text(
+        //           "Adhar Card",
+        //           // AppLocalizations.of(context)!.gst_number,
+        //           style: TextStyle(
+        //               color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsets.only(bottom: 8.0),
+        //         child: Container(
+        //           height: 36,
+        //           child: TextField(
+        //             controller: _adharFrontController,
+        //             onTap: onTapAdharFront,
+        //             readOnly: true,
+        //             textCapitalization: TextCapitalization.characters,
+        //             autofocus: false,
+        //             decoration: InputDecorations.buildInputDecoration_1(
+        //                 hint_text: "Adhar Front Side"),
+        //           ),
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsets.only(bottom: 8.0),
+        //         child: Container(
+        //           height: 36,
+        //           child: TextField(
+        //             controller: _adharBackController,
+        //             onTap: onTapAdharBack,
+        //             readOnly: true,
+        //             textCapitalization: TextCapitalization.characters,
+        //             autofocus: false,
+        //             decoration: InputDecorations.buildInputDecoration_1(
+        //                 hint_text: "Adhar Back Side"),
+        //           ),
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsets.only(bottom: 4.0),
+        //         child: Text(
+        //           "Pan Card",
+        //           // AppLocalizations.of(context)!.gst_number,
+        //           style: TextStyle(
+        //               color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsets.only(bottom: 8.0),
+        //         child: Container(
+        //           height: 36,
+        //           child: TextField(
+        //             controller: _panCardController,
+        //             onTap: onTapPan,
+        //             readOnly: true,
+        //             textCapitalization: TextCapitalization.characters,
+        //             autofocus: false,
+        //             decoration: InputDecorations.buildInputDecoration_1(
+        //                 hint_text: "Pan Card"),
+        //           ),
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsets.only(bottom: 4.0),
+        //         child: Text(
+        //           "Company Documents",
+        //           // AppLocalizations.of(context)!.gst_number,
+        //           style: TextStyle(
+        //               color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsets.only(bottom: 8.0),
+        //         child: Container(
+        //           height: 36,
+        //           child: TextField(
+        //             controller: _doc1Controller,
+        //             onTap: onTapDoc1,
+        //             readOnly: true,
+        //             textCapitalization: TextCapitalization.characters,
+        //             autofocus: false,
+        //             decoration: InputDecorations.buildInputDecoration_1(
+        //                 hint_text: "Document 1"),
+        //           ),
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsets.only(bottom: 8.0),
+        //         child: Container(
+        //           height: 36,
+        //           child: TextField(
+        //             controller: _doc2Controller,
+        //             onTap: onTapDoc2,
+        //             readOnly: true,
+        //             textCapitalization: TextCapitalization.characters,
+        //             autofocus: false,
+        //             decoration: InputDecorations.buildInputDecoration_1(
+        //                 hint_text: "Document 2"),
+        //           ),
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsets.only(bottom: 8.0),
+        //         child: Container(
+        //           height: 36,
+        //           child: TextField(
+        //             controller: _doc3Controller,
+        //             onTap: onTapDoc3,
+        //             readOnly: true,
+        //             textCapitalization: TextCapitalization.characters,
+        //             autofocus: false,
+        //             decoration: InputDecorations.buildInputDecoration_1(
+        //                 hint_text: "Document 3"),
+        //           ),
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsets.only(top: 20.0),
+        //         child: Row(
+        //           crossAxisAlignment: CrossAxisAlignment.start,
+        //           children: [
+        //             Container(
+        //               height: 15,
+        //               width: 15,
+        //               child: Checkbox(
+        //                   shape: RoundedRectangleBorder(
+        //                       borderRadius: BorderRadius.circular(6)),
+        //                   value: _isAgree,
+        //                   onChanged: (newValue) {
+        //                     _isAgree = newValue;
+        //                     setState(() {});
+        //                   }),
+        //             ),
+        //             Padding(
+        //               padding: const EdgeInsets.only(left: 8.0),
+        //               child: Container(
+        //                 width: DeviceInfo(context).width! - 130,
+        //                 child: RichText(
+        //                     maxLines: 2,
+        //                     text: TextSpan(
+        //                         style: TextStyle(
+        //                             color: MyTheme.font_grey, fontSize: 12),
+        //                         children: [
+        //                           TextSpan(
+        //                             text: "I agree to the",
+        //                           ),
+        //                           TextSpan(
+        //                             recognizer: TapGestureRecognizer()
+        //                               ..onTap = () {
+        //                                 Navigator.push(
+        //                                     context,
+        //                                     MaterialPageRoute(
+        //                                         builder: (context) =>
+        //                                             CommonWebviewScreen(
+        //                                               page_name:
+        //                                                   "Terms Conditions",
+        //                                               url:
+        //                                                   "${AppConfig.RAW_BASE_URL}/mobile-page/terms",
+        //                                             )));
+        //                               },
+        //                             style:
+        //                                 TextStyle(color: MyTheme.accent_color),
+        //                             text: " Terms Conditions",
+        //                           ),
+        //                           TextSpan(
+        //                             text: " &",
+        //                           ),
+        //                           TextSpan(
+        //                             recognizer: TapGestureRecognizer()
+        //                               ..onTap = () {
+        //                                 Navigator.push(
+        //                                     context,
+        //                                     MaterialPageRoute(
+        //                                         builder: (context) =>
+        //                                             CommonWebviewScreen(
+        //                                               page_name:
+        //                                                   "Privacy Policy",
+        //                                               url:
+        //                                                   "${AppConfig.RAW_BASE_URL}/mobile-page/privacy-policy",
+        //                                             )));
+        //                               },
+        //                             text: " Privacy Policy",
+        //                             style:
+        //                                 TextStyle(color: MyTheme.accent_color),
+        //                           )
+        //                         ])),
+        //               ),
+        //             )
+        //           ],
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsets.only(top: 30.0),
+        //         child: Container(
+        //           height: 45,
+        //           child: Btn.minWidthFixHeight(
+        //             minWidth: MediaQuery.of(context).size.width,
+        //             height: 50,
+        //             color: MyTheme.accent_color,
+        //             shape: RoundedRectangleBorder(
+        //                 borderRadius:
+        //                     const BorderRadius.all(Radius.circular(6.0))),
+        //             child: Text(
+        //               AppLocalizations.of(context)!.sign_up_ucf,
+        //               style: TextStyle(
+        //                   color: Colors.white,
+        //                   fontSize: 14,
+        //                   fontWeight: FontWeight.w600),
+        //             ),
+        //             onPressed: _isAgree!
+        //                 ? () {
+        //                     // onPressSignUp();
+        //                   }
+        //                 : null,
+        //           ),
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsets.only(top: 20.0),
+        //         child: Row(
+        //           mainAxisAlignment: MainAxisAlignment.center,
+        //           children: [
+        //             Center(
+        //                 child: Text(
+        //               AppLocalizations.of(context)!.already_have_an_account,
+        //               style: TextStyle(color: MyTheme.font_grey, fontSize: 12),
+        //             )),
+        //             SizedBox(
+        //               width: 10,
+        //             ),
+        //             InkWell(
+        //               child: Text(
+        //                 AppLocalizations.of(context)!.log_in,
+        //                 style: TextStyle(
+        //                     color: MyTheme.accent_color,
+        //                     fontSize: 14,
+        //                     fontWeight: FontWeight.w600),
+        //               ),
+        //               onTap: () {
+        //                 Navigator.push(context,
+        //                     MaterialPageRoute(builder: (context) {
+        //                   return Login();
+        //                 }));
+        //               },
+        //             ),
+        //           ],
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // )
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
-                child: Text(
-                  AppLocalizations.of(context)!.name_ucf,
-                  style: TextStyle(
-                      color: MyTheme.accent_color, fontWeight: FontWeight.w600),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
+              Expanded(
+                  child: GestureDetector(
+                onTap: () => setState(() {
+                  isindividual = true;
+                  onPressregistrationtype();
+                }),
                 child: Container(
-                  height: 36,
-                  child: TextField(
-                    controller: _nameController,
-                    autofocus: false,
-                    decoration: InputDecorations.buildInputDecoration_1(
-                        hint_text: "John Doe"),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
-                child: Text(
-                  AppLocalizations.of(context)!.email_ucf,
-                  style: TextStyle(
-                      color: MyTheme.accent_color, fontWeight: FontWeight.w600),
-                ),
-              ),
-              if (_register_by == "email")
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      color: MyTheme.white,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: !isindividual
+                          ? null
+                          : [
+                              BoxShadow(
+                                  color: MyTheme.blue_grey.withOpacity(.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 4)
+                            ]),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        height: 36,
-                        child: TextField(
-                          controller: _emailController,
-                          autofocus: false,
-                          decoration: InputDecorations.buildInputDecoration_1(
-                              hint_text: "johndoe@example.com"),
-                        ),
+                      Text(
+                        "Individual",
+                        style: TextStyle(
+                            color: !isindividual
+                                ? MyTheme.accent_color_shadow
+                                : MyTheme.accent_color,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16),
                       ),
-                      otp_addon_installed.$
-                          ? GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _register_by = "phone";
-                                });
-                              },
-                              child: Text(
-                                AppLocalizations.of(context)!
-                                    .or_register_with_a_phone,
-                                style: TextStyle(
-                                    color: MyTheme.accent_color,
-                                    fontStyle: FontStyle.italic,
-                                    decoration: TextDecoration.underline),
-                              ),
-                            )
-                          : Container()
+                      Radio(
+                          value: isindividual,
+                          groupValue: true,
+                          onChanged: (value) {
+                            isindividual = !value!;
+                            onPressregistrationtype();
+
+                            setState(() {
+                              print(value);
+                            });
+                          })
                     ],
                   ),
-                )
-              else
-                // Padding(
-                //   padding: const EdgeInsets.only(bottom: 4.0),
-                //   child: Text(
-                //     AppLocalizations.of(context)!.phone_ucf,
-                //     style: TextStyle(
-                //         color: MyTheme.accent_color,
-                //         fontWeight: FontWeight.w600),
-                //   ),
-                // ),
-                // else
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                ),
+              )),
+              SizedBox(
+                width: 6,
+              ),
+              Expanded(
+                  child: GestureDetector(
+                onTap: () => setState(() {
+                  isindividual = false;
+                  onPressregistrationtype();
+                }),
+                child: Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      color: MyTheme.white,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: isindividual
+                          ? null
+                          : [
+                              BoxShadow(
+                                  color: MyTheme.blue_grey.withOpacity(.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 4)
+                            ]),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        height: 36,
-                        child: CustomInternationalPhoneNumberInput(
-                          countries: countries_code,
-                          maxLength: 10,
-                          onInputChanged: (PhoneNumber number) {
-                            print(number.phoneNumber);
+                      Text(
+                        "Business",
+                        style: TextStyle(
+                            color: isindividual
+                                ? MyTheme.accent_color_shadow
+                                : MyTheme.accent_color,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16),
+                      ),
+                      Radio(
+                          value: isindividual,
+                          groupValue: false,
+                          onChanged: (value) {
+                            isindividual = !value!;
+                            onPressregistrationtype();
+
+                            setState(() {});
+                          })
+                    ],
+                  ),
+                ),
+              )),
+            ],
+          ),
+        ),
+        if (isindividual)
+          individual_body(_screen_width)
+        else
+          busyniess_body(_screen_width)
+      ],
+    );
+  }
+
+  Widget individual_body(double _screen_width) {
+    return Container(
+      width: _screen_width * (3 / 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Text(
+              AppLocalizations.of(context)!.name_ucf + "*",
+              style: TextStyle(
+                  color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Container(
+              height: 36,
+              child: TextField(
+                controller: _nameController,
+                autofocus: false,
+                decoration: InputDecorations.buildInputDecoration_1(
+                    hint_text: "John Doe"),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Text(
+              (_register_by == "email"
+                      ? AppLocalizations.of(context)!.email_ucf
+                      : AppLocalizations.of(context)!.phone_ucf) +
+                  "*",
+              style: TextStyle(
+                  color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+            ),
+          ),
+          if (_register_by == "email")
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Container(
+                    height: 36,
+                    child: TextField(
+                      controller: _emailController,
+                      autofocus: false,
+                      decoration: InputDecorations.buildInputDecoration_1(
+                          hint_text: "johndoe@example.com"),
+                    ),
+                  ),
+                  otp_addon_installed.$
+                      ? GestureDetector(
+                          onTap: () {
                             setState(() {
-                              _phone = number.phoneNumber;
+                              _register_by = "phone";
                             });
                           },
-                          onInputValidated: (bool value) {
-                            print(value);
-                          },
-                          selectorConfig: SelectorConfig(
-                            selectorType: PhoneInputSelectorType.DIALOG,
+                          child: Text(
+                            AppLocalizations.of(context)!
+                                .or_register_with_a_phone,
+                            style: TextStyle(
+                                color: MyTheme.accent_color,
+                                fontStyle: FontStyle.italic,
+                                decoration: TextDecoration.underline),
                           ),
-                          ignoreBlank: false,
-                          autoValidateMode: AutovalidateMode.disabled,
-                          selectorTextStyle:
-                              TextStyle(color: MyTheme.font_grey),
-                          initialValue: countries_code.isEmpty
-                              ? null
-                              : PhoneNumber(
-                                  isoCode: countries_code[0].toString()),
-                          textFieldController: _phoneNumberController,
-                          formatInput: true,
-                          keyboardType: TextInputType.numberWithOptions(
-                              signed: true, decimal: true),
-                          inputDecoration:
-                              InputDecorations.buildInputDecoration_phone(
-                                  hint_text: "01XXX XXX XXX"),
-                          onSaved: (PhoneNumber number) {
-                            //print('On Saved: $number');
-                          },
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _register_by = "email";
-                          });
-                        },
-                        child: Text(
-                          AppLocalizations.of(context)!
-                              .or_register_with_an_email,
-                          style: TextStyle(
-                              color: MyTheme.accent_color,
-                              fontStyle: FontStyle.italic,
-                              decoration: TextDecoration.underline),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
-                child: Text(
-                  AppLocalizations.of(context)!.password_ucf,
-                  style: TextStyle(
-                      color: MyTheme.accent_color, fontWeight: FontWeight.w600),
-                ),
+                        )
+                      : Container()
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Container(
-                      height: 36,
-                      child: TextField(
-                        controller: _passwordController,
-                        autofocus: false,
-                        obscureText: true,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        decoration: InputDecorations.buildInputDecoration_1(
-                            hint_text: "• • • • • • • •"),
+            )
+          else
+            // Padding(
+            //   padding: const EdgeInsets.only(bottom: 4.0),
+            //   child: Text(
+            //     AppLocalizations.of(context)!.phone_ucf,
+            //     style: TextStyle(
+            //         color: MyTheme.accent_color,
+            //         fontWeight: FontWeight.w600),
+            //   ),
+            // ),
+            // else
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Container(
+                    height: 36,
+                    child: CustomInternationalPhoneNumberInput(
+                      countries: countries_code,
+                      maxLength: 10,
+                      onInputChanged: (PhoneNumber number) {
+                        print(number.phoneNumber);
+                        setState(() {
+                          _phone = number.phoneNumber;
+                        });
+                      },
+                      onInputValidated: (bool value) {
+                        print(value);
+                      },
+                      selectorConfig: SelectorConfig(
+                        selectorType: PhoneInputSelectorType.DIALOG,
                       ),
+                      ignoreBlank: false,
+                      autoValidateMode: AutovalidateMode.disabled,
+                      selectorTextStyle: TextStyle(color: MyTheme.font_grey),
+                      initialValue: countries_code.isEmpty
+                          ? null
+                          : PhoneNumber(isoCode: countries_code[0].toString()),
+                      textFieldController: _phoneNumberController,
+                      formatInput: false,
+                      keyboardType: TextInputType.numberWithOptions(
+                          signed: true, decimal: true),
+                      inputDecoration:
+                          InputDecorations.buildInputDecoration_phone(
+                              hint_text: "01XXX XXXXX"),
+                      onSaved: (PhoneNumber number) {
+                        //print('On Saved: $number');
+                      },
                     ),
-                    Text(
-                      AppLocalizations.of(context)!
-                          .password_must_contain_at_least_6_characters,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _register_by = "email";
+                      });
+                    },
+                    child: Text(
+                      AppLocalizations.of(context)!.or_register_with_an_email,
                       style: TextStyle(
-                          color: MyTheme.textfield_grey,
-                          fontStyle: FontStyle.italic),
-                    )
-                  ],
-                ),
+                          color: MyTheme.accent_color,
+                          fontStyle: FontStyle.italic,
+                          decoration: TextDecoration.underline),
+                    ),
+                  )
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
-                child: Text(
-                  AppLocalizations.of(context)!.retype_password_ucf,
-                  style: TextStyle(
-                      color: MyTheme.accent_color, fontWeight: FontWeight.w600),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Container(
+            ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Text(
+              AppLocalizations.of(context)!.password_ucf + "*",
+              style: TextStyle(
+                  color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Container(
                   height: 36,
                   child: TextField(
-                    controller: _passwordConfirmController,
+                    controller: _passwordController,
                     autofocus: false,
                     obscureText: true,
                     enableSuggestions: false,
@@ -632,322 +1344,1077 @@ class _RegistrationState extends State<Registration> {
                         hint_text: "• • • • • • • •"),
                   ),
                 ),
+                Text(
+                  AppLocalizations.of(context)!
+                      .password_must_contain_at_least_6_characters,
+                  style: TextStyle(
+                      color: MyTheme.textfield_grey,
+                      fontStyle: FontStyle.italic),
+                )
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Text(
+              AppLocalizations.of(context)!.retype_password_ucf + "*",
+              style: TextStyle(
+                  color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Container(
+              height: 36,
+              child: TextField(
+                controller: _passwordConfirmController,
+                autofocus: false,
+                obscureText: true,
+                enableSuggestions: false,
+                autocorrect: false,
+                decoration: InputDecorations.buildInputDecoration_1(
+                    hint_text: "• • • • • • • •"),
               ),
-              if (google_recaptcha.$)
+            ),
+          ),
+          if (google_recaptcha.$)
+            Container(
+              height: _isCaptchaShowing ? 350 : 50,
+              width: 300,
+              child: Captcha(
+                (keyValue) {
+                  googleRecaptchaKey = keyValue;
+                  setState(() {});
+                },
+                handleCaptcha: (data) {
+                  if (_isCaptchaShowing.toString() != data) {
+                    _isCaptchaShowing = data;
+                    setState(() {});
+                  }
+                },
+                isIOS: Platform.isIOS,
+              ),
+            ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Text(
+              "WhatsApp No*",
+              style: TextStyle(
+                  color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Container(
+              height: 36,
+              child: CustomInternationalPhoneNumberInput(
+                countries: countries_code,
+                maxLength: 10,
+                onInputChanged: (PhoneNumber number) {
+                  setState(() {
+                    _whatsappNo = number.phoneNumber;
+                  });
+                },
+                onInputValidated: (bool value) {
+                  print(value);
+                },
+                selectorConfig: SelectorConfig(
+                  selectorType: PhoneInputSelectorType.DIALOG,
+                ),
+                ignoreBlank: false,
+                autoValidateMode: AutovalidateMode.disabled,
+                selectorTextStyle: TextStyle(color: MyTheme.font_grey),
+                initialValue: countries_code.isEmpty
+                    ? null
+                    : PhoneNumber(isoCode: countries_code[0].toString()),
+                textFieldController: _whatsappNumberController,
+                formatInput: false,
+                keyboardType: TextInputType.numberWithOptions(
+                    signed: true, decimal: true),
+                inputDecoration: InputDecorations.buildInputDecoration_phone(
+                    hint_text: "01XXX XXXXX"),
+                onSaved: (PhoneNumber number) {
+                  //print('On Saved: $number');
+                },
+              ),
+            ),
+          ),
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: 4.0),
+          //   child: Text(
+          //     AppLocalizations.of(context)!.shop_address,
+          //     style: TextStyle(
+          //         color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: 8.0),
+          //   child: Container(
+          //     height: 36,
+          //     child: TextField(
+          //       controller: _shopaddressController,
+          //       autofocus: false,
+          //       decoration: InputDecorations.buildInputDecoration_1(
+          //           hint_text: "Business Address"),
+          //     ),
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: 4.0),
+          //   child: Text(
+          //     "GST Number",
+          //     // AppLocalizations.of(context)!.gst_number,
+          //     style: TextStyle(
+          //         color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: 8.0),
+          //   child: Container(
+          //     height: 36,
+          //     child: TextField(
+          //       onTap: onTapGST,
+          //       controller: _gstController,
+          //       textCapitalization: TextCapitalization.characters,
+          //       readOnly: true,
+          //       autofocus: false,
+          //       decoration: InputDecorations.buildInputDecoration_1(
+          //           hint_text: "GST Number"),
+          //     ),
+          //   ),
+          // ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Text(
+              "Adhar Card*",
+              // AppLocalizations.of(context)!.gst_number,
+              style: TextStyle(
+                  color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Container(
+              height: 36,
+              child: TextField(
+                controller: _adharFrontController,
+                onTap: onTapAdharFront,
+                readOnly: true,
+                textCapitalization: TextCapitalization.characters,
+                autofocus: false,
+                decoration: InputDecorations.buildInputDecoration_1(
+                    hint_text: "Adhar Front Side"),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Container(
+              height: 36,
+              child: TextField(
+                controller: _adharBackController,
+                onTap: onTapAdharBack,
+                readOnly: true,
+                textCapitalization: TextCapitalization.characters,
+                autofocus: false,
+                decoration: InputDecorations.buildInputDecoration_1(
+                    hint_text: "Adhar Back Side"),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Text(
+              "Pan Card",
+              // AppLocalizations.of(context)!.gst_number,
+              style: TextStyle(
+                  color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Container(
+              height: 36,
+              child: TextField(
+                controller: _panCardController,
+                onTap: onTapPan,
+                readOnly: true,
+                textCapitalization: TextCapitalization.characters,
+                autofocus: false,
+                decoration: InputDecorations.buildInputDecoration_1(
+                    hint_text: "Pan Card"),
+              ),
+            ),
+          ),
+
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: 4.0),
+          //   child: Text(
+          //     "Company Documents",
+          //     // AppLocalizations.of(context)!.gst_number,
+          //     style: TextStyle(
+          //         color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: 8.0),
+          //   child: Container(
+          //     height: 36,
+          //     child: TextField(
+          //       controller: _doc1Controller,
+          //       onTap: onTapDoc1,
+          //       readOnly: true,
+          //       textCapitalization: TextCapitalization.characters,
+          //       autofocus: false,
+          //       decoration: InputDecorations.buildInputDecoration_1(
+          //           hint_text: "Document 1"),
+          //     ),
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: 8.0),
+          //   child: Container(
+          //     height: 36,
+          //     child: TextField(
+          //       controller: _doc2Controller,
+          //       onTap: onTapDoc2,
+          //       readOnly: true,
+          //       textCapitalization: TextCapitalization.characters,
+          //       autofocus: false,
+          //       decoration: InputDecorations.buildInputDecoration_1(
+          //           hint_text: "Document 2"),
+          //     ),
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: 8.0),
+          //   child: Container(
+          //     height: 36,
+          //     child: TextField(
+          //       controller: _doc3Controller,
+          //       onTap: onTapDoc3,
+          //       readOnly: true,
+          //       textCapitalization: TextCapitalization.characters,
+          //       autofocus: false,
+          //       decoration: InputDecorations.buildInputDecoration_1(
+          //           hint_text: "Document 3"),
+          //     ),
+          //   ),
+          // ),
+          Padding(
+            padding: const EdgeInsets.only(top: 20.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Container(
-                  height: _isCaptchaShowing ? 350 : 50,
-                  width: 300,
-                  child: Captcha(
-                    (keyValue) {
-                      googleRecaptchaKey = keyValue;
-                      setState(() {});
-                    },
-                    handleCaptcha: (data) {
-                      if (_isCaptchaShowing.toString() != data) {
-                        _isCaptchaShowing = data;
+                  height: 15,
+                  width: 15,
+                  child: Checkbox(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6)),
+                      value: _isAgree,
+                      onChanged: (newValue) {
+                        _isAgree = newValue;
                         setState(() {});
+                      }),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Container(
+                    width: DeviceInfo(context).width! - 130,
+                    child: RichText(
+                        maxLines: 2,
+                        text: TextSpan(
+                            style: TextStyle(
+                                color: MyTheme.font_grey, fontSize: 12),
+                            children: [
+                              TextSpan(
+                                text: "I agree to the",
+                              ),
+                              TextSpan(
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                CommonWebviewScreen(
+                                                  page_name: "Terms Conditions",
+                                                  url:
+                                                      "${AppConfig.RAW_BASE_URL}/mobile-page/terms",
+                                                )));
+                                  },
+                                style: TextStyle(color: MyTheme.accent_color),
+                                text: " Terms Conditions",
+                              ),
+                              TextSpan(
+                                text: " &",
+                              ),
+                              TextSpan(
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                CommonWebviewScreen(
+                                                  page_name: "Privacy Policy",
+                                                  url:
+                                                      "${AppConfig.RAW_BASE_URL}/mobile-page/privacy-policy",
+                                                )));
+                                  },
+                                text: " Privacy Policy",
+                                style: TextStyle(color: MyTheme.accent_color),
+                              )
+                            ])),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 30.0),
+            child: Container(
+              height: 45,
+              child: Btn.minWidthFixHeight(
+                minWidth: MediaQuery.of(context).size.width,
+                height: 50,
+                color: MyTheme.accent_color,
+                shape: RoundedRectangleBorder(
+                    borderRadius: const BorderRadius.all(Radius.circular(6.0))),
+                child: Text(
+                  AppLocalizations.of(context)!.sign_up_ucf,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600),
+                ),
+                onPressed: _isAgree!
+                    ? () {
+                        onPressSignUp();
                       }
-                    },
-                    isIOS: Platform.isIOS,
-                  ),
-                ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
-                child: Text(
-                  AppLocalizations.of(context)!.shop_address,
-                  style: TextStyle(
-                      color: MyTheme.accent_color, fontWeight: FontWeight.w600),
-                ),
+                    : null,
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Container(
-                  height: 36,
-                  child: TextField(
-                    controller: _shopaddressController,
-                    autofocus: false,
-                    decoration: InputDecorations.buildInputDecoration_1(
-                        hint_text: "Shop Address"),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
-                child: Text(
-                  "GST Number",
-                  // AppLocalizations.of(context)!.gst_number,
-                  style: TextStyle(
-                      color: MyTheme.accent_color, fontWeight: FontWeight.w600),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Container(
-                  height: 36,
-                  child: TextField(
-                    onTap: onTapGST,
-                    controller: _gstController,
-                    textCapitalization: TextCapitalization.characters,
-                    readOnly: true,
-                    autofocus: false,
-                    decoration: InputDecorations.buildInputDecoration_1(
-                        hint_text: "GST Number"),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
-                child: Text(
-                  "Adhar Card",
-                  // AppLocalizations.of(context)!.gst_number,
-                  style: TextStyle(
-                      color: MyTheme.accent_color, fontWeight: FontWeight.w600),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Container(
-                  height: 36,
-                  child: TextField(
-                    controller: _adharFrontController,
-                    onTap: onTapAdharFront,
-                    readOnly: true,
-                    textCapitalization: TextCapitalization.characters,
-                    autofocus: false,
-                    decoration: InputDecorations.buildInputDecoration_1(
-                        hint_text: "Adhar Front Side"),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Container(
-                  height: 36,
-                  child: TextField(
-                    controller: _adharBackController,
-                    onTap: onTapAdharBack,
-                    readOnly: true,
-                    textCapitalization: TextCapitalization.characters,
-                    autofocus: false,
-                    decoration: InputDecorations.buildInputDecoration_1(
-                        hint_text: "Adhar Back Side"),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
-                child: Text(
-                  "Pan Card",
-                  // AppLocalizations.of(context)!.gst_number,
-                  style: TextStyle(
-                      color: MyTheme.accent_color, fontWeight: FontWeight.w600),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Container(
-                  height: 36,
-                  child: TextField(
-                    controller: _panCardController,
-                    onTap: onTapPan,
-                    readOnly: true,
-                    textCapitalization: TextCapitalization.characters,
-                    autofocus: false,
-                    decoration: InputDecorations.buildInputDecoration_1(
-                        hint_text: "Pan Card"),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
-                child: Text(
-                  "Company Documents",
-                  // AppLocalizations.of(context)!.gst_number,
-                  style: TextStyle(
-                      color: MyTheme.accent_color, fontWeight: FontWeight.w600),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Container(
-                  height: 36,
-                  child: TextField(
-                    controller: _doc1Controller,
-                    onTap: onTapDoc1,
-                    readOnly: true,
-                    textCapitalization: TextCapitalization.characters,
-                    autofocus: false,
-                    decoration: InputDecorations.buildInputDecoration_1(
-                        hint_text: "Document 1"),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Container(
-                  height: 36,
-                  child: TextField(
-                    controller: _doc2Controller,
-                    onTap: onTapDoc2,
-                    readOnly: true,
-                    textCapitalization: TextCapitalization.characters,
-                    autofocus: false,
-                    decoration: InputDecorations.buildInputDecoration_1(
-                        hint_text: "Document 2"),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Container(
-                  height: 36,
-                  child: TextField(
-                    controller: _doc3Controller,
-                    onTap: onTapDoc3,
-                    readOnly: true,
-                    textCapitalization: TextCapitalization.characters,
-                    autofocus: false,
-                    decoration: InputDecorations.buildInputDecoration_1(
-                        hint_text: "Document 3"),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: 15,
-                      width: 15,
-                      child: Checkbox(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6)),
-                          value: _isAgree,
-                          onChanged: (newValue) {
-                            _isAgree = newValue;
-                            setState(() {});
-                          }),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: Container(
-                        width: DeviceInfo(context).width! - 130,
-                        child: RichText(
-                            maxLines: 2,
-                            text: TextSpan(
-                                style: TextStyle(
-                                    color: MyTheme.font_grey, fontSize: 12),
-                                children: [
-                                  TextSpan(
-                                    text: "I agree to the",
-                                  ),
-                                  TextSpan(
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    CommonWebviewScreen(
-                                                      page_name:
-                                                          "Terms Conditions",
-                                                      url:
-                                                          "${AppConfig.RAW_BASE_URL}/mobile-page/terms",
-                                                    )));
-                                      },
-                                    style:
-                                        TextStyle(color: MyTheme.accent_color),
-                                    text: " Terms Conditions",
-                                  ),
-                                  TextSpan(
-                                    text: " &",
-                                  ),
-                                  TextSpan(
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    CommonWebviewScreen(
-                                                      page_name:
-                                                          "Privacy Policy",
-                                                      url:
-                                                          "${AppConfig.RAW_BASE_URL}/mobile-page/privacy-policy",
-                                                    )));
-                                      },
-                                    text: " Privacy Policy",
-                                    style:
-                                        TextStyle(color: MyTheme.accent_color),
-                                  )
-                                ])),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 30.0),
-                child: Container(
-                  height: 45,
-                  child: Btn.minWidthFixHeight(
-                    minWidth: MediaQuery.of(context).size.width,
-                    height: 50,
-                    color: MyTheme.accent_color,
-                    shape: RoundedRectangleBorder(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(6.0))),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
                     child: Text(
-                      AppLocalizations.of(context)!.sign_up_ucf,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    onPressed: _isAgree!
-                        ? () {
-                            onPressSignUp();
-                          }
-                        : null,
-                  ),
+                  AppLocalizations.of(context)!.already_have_an_account,
+                  style: TextStyle(color: MyTheme.font_grey, fontSize: 12),
+                )),
+                SizedBox(
+                  width: 10,
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Center(
-                        child: Text(
-                      AppLocalizations.of(context)!.already_have_an_account,
-                      style: TextStyle(color: MyTheme.font_grey, fontSize: 12),
-                    )),
-                    SizedBox(
-                      width: 10,
+                InkWell(
+                  child: Text(
+                    AppLocalizations.of(context)!.log_in,
+                    style: TextStyle(
+                        color: MyTheme.accent_color,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return Login();
+                    }));
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget busyniess_body(double _screen_width) {
+    return Container(
+      width: _screen_width * (3 / 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: PopupMenuButton(
+              initialValue: businessType,
+              child: Row(
+                children: [
+                  Text(
+                    businessType,
+                    style: TextStyle(
+                      fontSize: 18,
                     ),
-                    InkWell(
-                      child: Text(
-                        AppLocalizations.of(context)!.log_in,
-                        style: TextStyle(
-                            color: MyTheme.accent_color,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600),
+                  ),
+                  Icon(Icons.arrow_drop_down)
+                ],
+              ),
+              // icon: Icon(Icons.keyboard_arrow_down),
+              itemBuilder: (_) {
+                return [
+                  PopupMenuItem(
+                    child: Text("Distributorship"),
+                    onTap: () {
+                      setState(() {
+                        businessType = "Distributorship";
+                      });
+                    },
+                  ),
+                  PopupMenuItem(
+                    child: Text("Retailing"),
+                    onTap: () {
+                      setState(() {
+                        businessType = "Retailing";
+                      });
+                    },
+                  ),
+                ];
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Text(
+              AppLocalizations.of(context)!.name_ucf + "*",
+              style: TextStyle(
+                  color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Container(
+              height: 36,
+              child: TextField(
+                controller: _nameController,
+                autofocus: false,
+                decoration: InputDecorations.buildInputDecoration_1(
+                    hint_text: "John Doe"),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Text(
+              (_register_by == "email"
+                      ? AppLocalizations.of(context)!.email_ucf
+                      : AppLocalizations.of(context)!.phone_ucf) +
+                  "*",
+              style: TextStyle(
+                  color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+            ),
+          ),
+          if (_register_by == "email")
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Container(
+                    height: 36,
+                    child: TextField(
+                      controller: _emailController,
+                      autofocus: false,
+                      decoration: InputDecorations.buildInputDecoration_1(
+                          hint_text: "johndoe@example.com"),
+                    ),
+                  ),
+                  otp_addon_installed.$
+                      ? GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _register_by = "phone";
+                            });
+                          },
+                          child: Text(
+                            AppLocalizations.of(context)!
+                                .or_register_with_a_phone,
+                            style: TextStyle(
+                                color: MyTheme.accent_color,
+                                fontStyle: FontStyle.italic,
+                                decoration: TextDecoration.underline),
+                          ),
+                        )
+                      : Container()
+                ],
+              ),
+            )
+          else
+            // Padding(
+            //   padding: const EdgeInsets.only(bottom: 4.0),
+            //   child: Text(
+            //     AppLocalizations.of(context)!.phone_ucf,
+            //     style: TextStyle(
+            //         color: MyTheme.accent_color,
+            //         fontWeight: FontWeight.w600),
+            //   ),
+            // ),
+            // else
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Container(
+                    height: 36,
+                    child: CustomInternationalPhoneNumberInput(
+                      countries: countries_code,
+                      maxLength: 10,
+                      onInputChanged: (PhoneNumber number) {
+                        print(number.phoneNumber);
+                        setState(() {
+                          _phone = number.phoneNumber;
+                        });
+                      },
+                      onInputValidated: (bool value) {
+                        print(value);
+                      },
+                      selectorConfig: SelectorConfig(
+                        selectorType: PhoneInputSelectorType.DIALOG,
                       ),
-                      onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return Login();
-                        }));
+                      ignoreBlank: false,
+                      autoValidateMode: AutovalidateMode.disabled,
+                      selectorTextStyle: TextStyle(color: MyTheme.font_grey),
+                      initialValue: countries_code.isEmpty
+                          ? null
+                          : PhoneNumber(isoCode: countries_code[0].toString()),
+                      textFieldController: _phoneNumberController,
+                      formatInput: false,
+                      keyboardType: TextInputType.numberWithOptions(
+                          signed: true, decimal: true),
+                      inputDecoration:
+                          InputDecorations.buildInputDecoration_phone(
+                              hint_text: "01XXX XXXXX"),
+                      onSaved: (PhoneNumber number) {
+                        //print('On Saved: $number');
                       },
                     ),
-                  ],
-                ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _register_by = "email";
+                      });
+                    },
+                    child: Text(
+                      AppLocalizations.of(context)!.or_register_with_an_email,
+                      style: TextStyle(
+                          color: MyTheme.accent_color,
+                          fontStyle: FontStyle.italic,
+                          decoration: TextDecoration.underline),
+                    ),
+                  )
+                ],
               ),
-            ],
+            ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Text(
+              AppLocalizations.of(context)!.password_ucf + "*",
+              style: TextStyle(
+                  color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+            ),
           ),
-        )
-      ],
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Container(
+                  height: 36,
+                  child: TextField(
+                    controller: _passwordController,
+                    autofocus: false,
+                    obscureText: true,
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    decoration: InputDecorations.buildInputDecoration_1(
+                        hint_text: "• • • • • • • •"),
+                  ),
+                ),
+                Text(
+                  AppLocalizations.of(context)!
+                      .password_must_contain_at_least_6_characters,
+                  style: TextStyle(
+                      color: MyTheme.textfield_grey,
+                      fontStyle: FontStyle.italic),
+                )
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Text(
+              AppLocalizations.of(context)!.retype_password_ucf + "*",
+              style: TextStyle(
+                  color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Container(
+              height: 36,
+              child: TextField(
+                controller: _passwordConfirmController,
+                autofocus: false,
+                obscureText: true,
+                enableSuggestions: false,
+                autocorrect: false,
+                decoration: InputDecorations.buildInputDecoration_1(
+                    hint_text: "• • • • • • • •"),
+              ),
+            ),
+          ),
+          if (google_recaptcha.$)
+            Container(
+              height: _isCaptchaShowing ? 350 : 50,
+              width: 300,
+              child: Captcha(
+                (keyValue) {
+                  googleRecaptchaKey = keyValue;
+                  setState(() {});
+                },
+                handleCaptcha: (data) {
+                  if (_isCaptchaShowing.toString() != data) {
+                    _isCaptchaShowing = data;
+                    setState(() {});
+                  }
+                },
+                isIOS: Platform.isIOS,
+              ),
+            ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Text(
+              "WhatsApp No*",
+              style: TextStyle(
+                  color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Container(
+              height: 36,
+              child: CustomInternationalPhoneNumberInput(
+                countries: countries_code,
+                maxLength: 10,
+                onInputChanged: (PhoneNumber number) {
+                  setState(() {
+                    _whatsappNo = number.phoneNumber;
+                  });
+                },
+                onInputValidated: (bool value) {
+                  print(value);
+                },
+                selectorConfig: SelectorConfig(
+                  selectorType: PhoneInputSelectorType.DIALOG,
+                ),
+                ignoreBlank: false,
+                autoValidateMode: AutovalidateMode.disabled,
+                selectorTextStyle: TextStyle(color: MyTheme.font_grey),
+                initialValue: countries_code.isEmpty
+                    ? null
+                    : PhoneNumber(isoCode: countries_code[0].toString()),
+                textFieldController: _whatsappNumberController,
+                formatInput: false,
+                keyboardType: TextInputType.numberWithOptions(
+                    signed: true, decimal: true),
+                inputDecoration: InputDecorations.buildInputDecoration_phone(
+                    hint_text: "01XXX XXXXX"),
+                onSaved: (PhoneNumber number) {
+                  //print('On Saved: $number');
+                },
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Text(
+              "Business Name*",
+              style: TextStyle(
+                  color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Container(
+              height: 36,
+              child: TextField(
+                controller: _businessNameController,
+                autofocus: false,
+                decoration: InputDecorations.buildInputDecoration_1(
+                    hint_text: "Business Name"),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Text(
+              "Business Address*",
+              style: TextStyle(
+                  color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Container(
+              height: 36,
+              child: TextField(
+                controller: _shopaddressController,
+                autofocus: false,
+                decoration: InputDecorations.buildInputDecoration_1(
+                    hint_text: "Business Address"),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Text(
+              "GST Photo",
+              // AppLocalizations.of(context)!.gst_number,
+              style: TextStyle(
+                  color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Container(
+              height: 36,
+              child: TextField(
+                onTap: onTapGST,
+                controller: _gstPhotoController,
+                textCapitalization: TextCapitalization.characters,
+                readOnly: true,
+                autofocus: false,
+                decoration: InputDecorations.buildInputDecoration_1(
+                    hint_text: "GST Photo"),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Text(
+              "GST Number",
+              // AppLocalizations.of(context)!.gst_number,
+              style: TextStyle(
+                  color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Container(
+              height: 36,
+              child: TextField(
+                // onTap: onTapGST,
+                controller: _gstController,
+                textCapitalization: TextCapitalization.characters,
+                // readOnly: true,
+                autofocus: false,
+                decoration: InputDecorations.buildInputDecoration_1(
+                    hint_text: "GST Number"),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Text(
+              "Adhar Card",
+              // AppLocalizations.of(context)!.gst_number,
+              style: TextStyle(
+                  color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Container(
+              height: 36,
+              child: TextField(
+                controller: _adharFrontController,
+                onTap: onTapAdharFront,
+                readOnly: true,
+                textCapitalization: TextCapitalization.characters,
+                autofocus: false,
+                decoration: InputDecorations.buildInputDecoration_1(
+                    hint_text: "Adhar Front Side"),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Container(
+              height: 36,
+              child: TextField(
+                controller: _adharBackController,
+                onTap: onTapAdharBack,
+                readOnly: true,
+                textCapitalization: TextCapitalization.characters,
+                autofocus: false,
+                decoration: InputDecorations.buildInputDecoration_1(
+                    hint_text: "Adhar Back Side"),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Text(
+              "Pan Card*",
+              // AppLocalizations.of(context)!.gst_number,
+              style: TextStyle(
+                  color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Container(
+              height: 36,
+              child: TextField(
+                controller: _panCardController,
+                onTap: onTapPan,
+                readOnly: true,
+                textCapitalization: TextCapitalization.characters,
+                autofocus: false,
+                decoration: InputDecorations.buildInputDecoration_1(
+                    hint_text: "Pan Card"),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Text(
+              "Business Photo*",
+              // AppLocalizations.of(context)!.gst_number,
+              style: TextStyle(
+                  color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Container(
+              height: 36,
+              child: TextField(
+                // controller: _panCardController,
+                controller: _businessPhotoController,
+                onTap: onTapBuisnessPhoto,
+                readOnly: true,
+                textCapitalization: TextCapitalization.characters,
+                autofocus: false,
+                decoration: InputDecorations.buildInputDecoration_1(
+                    hint_text: "Business Photo"),
+              ),
+            ),
+          ),
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: 4.0),
+          //   child: Text(
+          //     "Business Image*",
+          //     // AppLocalizations.of(context)!.gst_number,
+          //     style: TextStyle(
+          //         color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: 8.0),
+          //   child: Container(
+          //     height: 36,
+          //     child: TextField(
+          //       // controller: _panCardController,
+          //       controller: _businessImageController,
+          //       onTap: onTapBuisnessImage,
+          //       readOnly: true,
+          //       textCapitalization: TextCapitalization.characters,
+          //       autofocus: false,
+          //       decoration: InputDecorations.buildInputDecoration_1(
+          //           hint_text: "Business Image"),
+          //     ),
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: 4.0),
+          //   child: Text(
+          //     "Company Documents",
+          //     // AppLocalizations.of(context)!.gst_number,
+          //     style: TextStyle(
+          //         color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: 8.0),
+          //   child: Container(
+          //     height: 36,
+          //     child: TextField(
+          //       controller: _doc1Controller,
+          //       onTap: onTapDoc1,
+          //       readOnly: true,
+          //       textCapitalization: TextCapitalization.characters,
+          //       autofocus: false,
+          //       decoration: InputDecorations.buildInputDecoration_1(
+          //           hint_text: "Document 1"),
+          //     ),
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: 8.0),
+          //   child: Container(
+          //     height: 36,
+          //     child: TextField(
+          //       controller: _doc2Controller,
+          //       onTap: onTapDoc2,
+          //       readOnly: true,
+          //       textCapitalization: TextCapitalization.characters,
+          //       autofocus: false,
+          //       decoration: InputDecorations.buildInputDecoration_1(
+          //           hint_text: "Document 2"),
+          //     ),
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: 8.0),
+          //   child: Container(
+          //     height: 36,
+          //     child: TextField(
+          //       controller: _doc3Controller,
+          //       onTap: onTapDoc3,
+          //       readOnly: true,
+          //       textCapitalization: TextCapitalization.characters,
+          //       autofocus: false,
+          //       decoration: InputDecorations.buildInputDecoration_1(
+          //           hint_text: "Document 3"),
+          //     ),
+          //   ),
+          // ),
+          Padding(
+            padding: const EdgeInsets.only(top: 20.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 15,
+                  width: 15,
+                  child: Checkbox(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6)),
+                      value: _isAgree,
+                      onChanged: (newValue) {
+                        _isAgree = newValue;
+                        setState(() {});
+                      }),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Container(
+                    width: DeviceInfo(context).width! - 130,
+                    child: RichText(
+                        maxLines: 2,
+                        text: TextSpan(
+                            style: TextStyle(
+                                color: MyTheme.font_grey, fontSize: 12),
+                            children: [
+                              TextSpan(
+                                text: "I agree to the",
+                              ),
+                              TextSpan(
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                CommonWebviewScreen(
+                                                  page_name: "Terms Conditions",
+                                                  url:
+                                                      "${AppConfig.RAW_BASE_URL}/mobile-page/terms",
+                                                )));
+                                  },
+                                style: TextStyle(color: MyTheme.accent_color),
+                                text: " Terms Conditions",
+                              ),
+                              TextSpan(
+                                text: " &",
+                              ),
+                              TextSpan(
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                CommonWebviewScreen(
+                                                  page_name: "Privacy Policy",
+                                                  url:
+                                                      "${AppConfig.RAW_BASE_URL}/mobile-page/privacy-policy",
+                                                )));
+                                  },
+                                text: " Privacy Policy",
+                                style: TextStyle(color: MyTheme.accent_color),
+                              )
+                            ])),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 30.0),
+            child: Container(
+              height: 45,
+              child: Btn.minWidthFixHeight(
+                minWidth: MediaQuery.of(context).size.width,
+                height: 50,
+                color: MyTheme.accent_color,
+                shape: RoundedRectangleBorder(
+                    borderRadius: const BorderRadius.all(Radius.circular(6.0))),
+                child: Text(
+                  AppLocalizations.of(context)!.sign_up_ucf,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600),
+                ),
+                onPressed: _isAgree!
+                    ? () {
+                        onPressSignUp();
+                      }
+                    : null,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                    child: Text(
+                  AppLocalizations.of(context)!.already_have_an_account,
+                  style: TextStyle(color: MyTheme.font_grey, fontSize: 12),
+                )),
+                SizedBox(
+                  width: 10,
+                ),
+                InkWell(
+                  child: Text(
+                    AppLocalizations.of(context)!.log_in,
+                    style: TextStyle(
+                        color: MyTheme.accent_color,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return Login();
+                    }));
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

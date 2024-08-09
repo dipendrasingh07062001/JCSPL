@@ -1622,32 +1622,26 @@ class _AddressState extends State<Address> {
       visible: widget.from_shipping_info,
       child: BottomAppBar(
         child: Container(
-          color: Colors.transparent,
-          height: 50,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Btn.minWidthFixHeight(
-                minWidth: MediaQuery.of(context).size.width,
-                height: 50,
-                color: MyTheme.accent_color,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0.0),
-                ),
-                child: Text(
-                  AppLocalizations.of(context)!.back_to_shipping_info,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600),
-                ),
-                onPressed: () {
-                  return Navigator.of(context).pop();
-                },
-              )
-            ],
-          ),
-        ),
+            color: Colors.transparent,
+            height: 50,
+            child: Btn.minWidthFixHeight(
+              minWidth: MediaQuery.of(context).size.width,
+              height: 50,
+              color: MyTheme.accent_color,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(0.0),
+              ),
+              child: Text(
+                AppLocalizations.of(context)!.back_to_shipping_info,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600),
+              ),
+              onPressed: () {
+                return Navigator.of(context).pop();
+              },
+            )),
       ),
     );
   }

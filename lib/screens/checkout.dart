@@ -1074,39 +1074,33 @@ class _CheckoutState extends State<Checkout> {
   BottomAppBar buildBottomAppBar(BuildContext context) {
     return BottomAppBar(
       child: Container(
-        color: Colors.transparent,
-        height: 50,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Btn.minWidthFixHeight(
-              minWidth: MediaQuery.of(context).size.width,
-              height: 50,
-              color: MyTheme.accent_color,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(0.0),
-              ),
-              child: Text(
-                widget.paymentFor == PaymentFor.WalletRecharge
-                    ? AppLocalizations.of(context)!.recharge_wallet_ucf
-                    : widget.paymentFor == PaymentFor.ManualPayment
-                        ? AppLocalizations.of(context)!.proceed_all_caps
-                        : widget.paymentFor == PaymentFor.PackagePay
-                            ? AppLocalizations.of(context)!.buy_package_ucf
-                            : AppLocalizations.of(context)!
-                                .place_my_order_all_capital,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600),
-              ),
-              onPressed: () {
-                onPressPlaceOrderOrProceed();
-              },
-            )
-          ],
-        ),
-      ),
+          color: Colors.transparent,
+          height: 50,
+          child: Btn.minWidthFixHeight(
+            minWidth: MediaQuery.of(context).size.width,
+            height: 50,
+            color: MyTheme.accent_color,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(0.0),
+            ),
+            child: Text(
+              widget.paymentFor == PaymentFor.WalletRecharge
+                  ? AppLocalizations.of(context)!.recharge_wallet_ucf
+                  : widget.paymentFor == PaymentFor.ManualPayment
+                      ? AppLocalizations.of(context)!.proceed_all_caps
+                      : widget.paymentFor == PaymentFor.PackagePay
+                          ? AppLocalizations.of(context)!.buy_package_ucf
+                          : AppLocalizations.of(context)!
+                              .place_my_order_all_capital,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600),
+            ),
+            onPressed: () {
+              onPressPlaceOrderOrProceed();
+            },
+          )),
     );
   }
 

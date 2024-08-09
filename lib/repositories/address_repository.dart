@@ -182,7 +182,8 @@ class AddressRepository {
   Future<dynamic> getCountryList({name = ""}) async {
     String url = ("${AppConfig.BASE_URL}/countries?name=${name}");
     final response = await ApiRequest.get(url: url, middleware: BannedUser());
-    print(response);
+    print("=== $url");
+    print("==="+response.toString());
     return countryResponseFromJson(response.body);
   }
 
