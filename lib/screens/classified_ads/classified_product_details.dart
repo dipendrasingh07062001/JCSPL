@@ -52,7 +52,7 @@ class _ClassifiedAdsDetailsState extends State<ClassifiedAdsDetails>
   Animation? _colorTween;
   late AnimationController _ColorAnimationController;
 
-  CarouselController _carouselController = CarouselController();
+  CarouselSliderController _carouselController = CarouselSliderController();
 
   //init values
 

@@ -144,7 +144,7 @@ class _DigitalProductsState extends State<DigitalProducts> {
 
     if (_digitalProducts.length == 0) {
       return Center(
-        child: Text(LangText(context).local!.no_data_is_available),
+        child: Text(LangText(context).local.no_data_is_available),
       );
     }
     return RefreshIndicator(

@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:active_ecommerce_flutter/app_config.dart';
 import 'package:active_ecommerce_flutter/custom/loading.dart';
@@ -166,16 +165,18 @@ class AuthRepository {
       // await MultipartFile.fromPath("company_three", image,
       //     filename: doc3.split("/").last),
     ];
-    if (adharFront != "" && adharBack != "") {
-      files.addAll([
-        await MultipartFile.fromPath("adhar_front", adharFront),
-        await MultipartFile.fromPath("adhar_back", adharBack),
-      ]);
+    if (adharFront != "") {
+      post_body.addAll({"adhar_front": adharFront, "adhar_back": adharBack});
+      // files.addAll([
+      //   await MultipartFile.fromPath("adhar_front", adharFront),
+      //   await MultipartFile.fromPath("adhar_back", adharBack),
+      // ]);
     }
     if (pan != "") {
-      files.add(
-        await MultipartFile.fromPath("pan_card", pan),
-      );
+      post_body.addAll({"pan_card": pan});
+      // files.add(
+      //   await MultipartFile.fromPath("pan_card", pan),
+      // );
     }
     if (businessImage != null && businessImage != "") {
       files.add(await MultipartFile.fromPath("business_image", businessImage));

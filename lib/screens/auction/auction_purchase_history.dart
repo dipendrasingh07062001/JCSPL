@@ -452,7 +452,7 @@ class _AuctionPurchaseHistoryState extends State<AuctionPurchaseHistory> {
   Widget buildOrderShimmer() {
     return SizedBox(
       height:
-          DeviceInfo(context!).width! - (AppBar().preferredSize.height + 90),
+          DeviceInfo(context).width! - (AppBar().preferredSize.height + 90),
       child: SingleChildScrollView(
         child: ListView.builder(
           controller: _scrollController,

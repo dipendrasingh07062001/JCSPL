@@ -66,7 +66,7 @@ class _SellerDetailsState extends State<SellerDetails> {
           _mainScrollController.position.maxScrollExtent) {
         if (tabOptionIndex == 2) {
           ToastComponent.showDialog(
-              LangText(context).local!.loading_more_products_ucf);
+              LangText(context).local.loading_more_products_ucf);
           setState(() {
             _page++;
           });
@@ -83,17 +83,17 @@ class _SellerDetailsState extends State<SellerDetails> {
     _isThisSellerFollowed = shopResponse.result;
     setState(() {});
     //}
-    ToastComponent.showDialog(shopResponse.message!);
+    ToastComponent.showDialog(shopResponse.message);
   }
 
   Future removedFollow(id) async {
     var shopResponse = await ShopRepository().followedRemove(id);
 
-    if (shopResponse.result!) {
+    if (shopResponse.result) {
       _isThisSellerFollowed = false;
       setState(() {});
     }
-    ToastComponent.showDialog(shopResponse.message!);
+    ToastComponent.showDialog(shopResponse.message);
   }
 
   Future checkFollowed() async {
@@ -384,7 +384,7 @@ class _SellerDetailsState extends State<SellerDetails> {
           Padding(
             padding: const EdgeInsets.only(left: 18.0, top: 20),
             child: Text(
-              LangText(context).local!.featured_products_ucf,
+              LangText(context).local.featured_products_ucf,
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -481,17 +481,17 @@ class _SellerDetailsState extends State<SellerDetails> {
           buildTabOptionItem(
             context,
             0,
-            LangText(context).local!.store_home_ucf,
+            LangText(context).local.store_home_ucf,
           ),
           buildTabOptionItem(
             context,
             1,
-            LangText(context).local!.top_selling_products_ucf,
+            LangText(context).local.top_selling_products_ucf,
           ),
           buildTabOptionItem(
             context,
             2,
-            LangText(context).local!.all_products_ucf,
+            LangText(context).local.all_products_ucf,
           ),
         ],
       ),
@@ -884,8 +884,8 @@ class _SellerDetailsState extends State<SellerDetails> {
                 },
                 child: Text(
                   _isThisSellerFollowed != null && _isThisSellerFollowed!
-                      ? LangText(context).local!.followed_ucf
-                      : LangText(context).local!.follow_ucf,
+                      ? LangText(context).local.followed_ucf
+                      : LangText(context).local.follow_ucf,
                   style: TextStyle(
                       fontSize: 10,
                       color: _isThisSellerFollowed != null &&

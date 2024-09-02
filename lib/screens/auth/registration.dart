@@ -9,22 +9,17 @@ import 'package:active_ecommerce_flutter/custom/google_recaptcha.dart';
 import 'package:active_ecommerce_flutter/custom/input_decorations.dart';
 import 'package:active_ecommerce_flutter/custom/intl_phone_input.dart';
 import 'package:active_ecommerce_flutter/custom/toast_component.dart';
-import 'package:active_ecommerce_flutter/helpers/auth_helper.dart';
 import 'package:active_ecommerce_flutter/helpers/shared_value_helper.dart';
 import 'package:active_ecommerce_flutter/my_theme.dart';
-import 'package:active_ecommerce_flutter/other_config.dart';
 import 'package:active_ecommerce_flutter/repositories/auth_repository.dart';
-import 'package:active_ecommerce_flutter/repositories/profile_repository.dart';
 import 'package:active_ecommerce_flutter/screens/auth/login.dart';
 import 'package:active_ecommerce_flutter/screens/common_webview_screen.dart';
 import 'package:active_ecommerce_flutter/ui_elements/auth_ui.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:toast/toast.dart';
 import 'package:validators/validators.dart';
@@ -212,13 +207,12 @@ class _RegistrationState extends State<Registration> {
       //
       //   return;
       // }
-      if (_adharFrontController.text.isEmpty ||
-          _adharBackController.text.isEmpty) {
-        ToastComponent.showDialog("Adhar card is required",
-            gravity: Toast.center, duration: Toast.lengthLong);
+      // if (adharfront.isEmpty) {
+      //   ToastComponent.showDialog("Adhar card is required",
+      //       gravity: Toast.center, duration: Toast.lengthLong);
 
-        return;
-      }
+      //   return;
+      // }
 
       //   if (_panCardController.text.isEmpty) {
       //   ToastComponent.showDialog("Pan card is required",
@@ -306,7 +300,7 @@ class _RegistrationState extends State<Registration> {
       //
       //   return;
       // }
-      if (_panCardController.text.isEmpty) {
+      if (pan.isEmpty) {
         ToastComponent.showDialog("Pan card is required",
             gravity: Toast.center, duration: Toast.lengthLong);
 
@@ -1486,7 +1480,7 @@ class _RegistrationState extends State<Registration> {
           Padding(
             padding: const EdgeInsets.only(bottom: 4.0),
             child: Text(
-              "Adhar Card*",
+              "Adhar Card",
               // AppLocalizations.of(context)!.gst_number,
               style: TextStyle(
                   color: MyTheme.accent_color, fontWeight: FontWeight.w600),
@@ -1498,30 +1492,37 @@ class _RegistrationState extends State<Registration> {
               height: 36,
               child: TextField(
                 controller: _adharFrontController,
-                onTap: onTapAdharFront,
-                readOnly: true,
+                // onTap: onTapAdharFront,
+                // readOnly: true,
+                onChanged: (value) => adharfront = value,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 textCapitalization: TextCapitalization.characters,
-                autofocus: false,
+                autofocus: false, maxLength: 12,
+                keyboardType: TextInputType.number,
                 decoration: InputDecorations.buildInputDecoration_1(
-                    hint_text: "Adhar Front Side"),
+                        hint_text: "Adhar Number")
+                    .copyWith(counterText: ""),
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Container(
-              height: 36,
-              child: TextField(
-                controller: _adharBackController,
-                onTap: onTapAdharBack,
-                readOnly: true,
-                textCapitalization: TextCapitalization.characters,
-                autofocus: false,
-                decoration: InputDecorations.buildInputDecoration_1(
-                    hint_text: "Adhar Back Side"),
-              ),
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: 8.0),
+          //   child: Container(
+          //     height: 36,
+          //     child: TextField(
+          //       onChanged: (value) => adharback = value,
+          //       controller: _adharBackController,
+          //       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          //       // onTap: onTapAdharBack,
+          //       keyboardType: TextInputType.number,
+          //       // readOnly: true,
+          //       textCapitalization: TextCapitalization.characters,
+          //       autofocus: false,
+          //       decoration: InputDecorations.buildInputDecoration_1(
+          //           hint_text: "Adhar Back Side"),
+          //     ),
+          //   ),
+          // ),
           Padding(
             padding: const EdgeInsets.only(bottom: 4.0),
             child: Text(
@@ -1537,8 +1538,9 @@ class _RegistrationState extends State<Registration> {
               height: 36,
               child: TextField(
                 controller: _panCardController,
-                onTap: onTapPan,
-                readOnly: true,
+                onChanged: (value) => pan = value,
+                // onTap: onTapPan,
+                // readOnly: true,
                 textCapitalization: TextCapitalization.characters,
                 autofocus: false,
                 decoration: InputDecorations.buildInputDecoration_1(
@@ -2071,30 +2073,30 @@ class _RegistrationState extends State<Registration> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 4.0),
-            child: Text(
-              "GST Photo",
-              // AppLocalizations.of(context)!.gst_number,
-              style: TextStyle(
-                  color: MyTheme.accent_color, fontWeight: FontWeight.w600),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Container(
-              height: 36,
-              child: TextField(
-                onTap: onTapGST,
-                controller: _gstPhotoController,
-                textCapitalization: TextCapitalization.characters,
-                readOnly: true,
-                autofocus: false,
-                decoration: InputDecorations.buildInputDecoration_1(
-                    hint_text: "GST Photo"),
-              ),
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: 4.0),
+          //   child: Text(
+          //     "GST Photo",
+          //     // AppLocalizations.of(context)!.gst_number,
+          //     style: TextStyle(
+          //         color: MyTheme.accent_color, fontWeight: FontWeight.w600),
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: 8.0),
+          //   child: Container(
+          //     height: 36,
+          //     child: TextField(
+          //       onTap: onTapGST,
+          //       controller: _gstPhotoController,
+          //       textCapitalization: TextCapitalization.characters,
+          //       readOnly: true,
+          //       autofocus: false,
+          //       decoration: InputDecorations.buildInputDecoration_1(
+          //           hint_text: "GST Photo"),
+          //     ),
+          //   ),
+          // ),
           Padding(
             padding: const EdgeInsets.only(bottom: 4.0),
             child: Text(
@@ -2134,30 +2136,39 @@ class _RegistrationState extends State<Registration> {
               height: 36,
               child: TextField(
                 controller: _adharFrontController,
-                onTap: onTapAdharFront,
-                readOnly: true,
+                // onTap: onTapAdharFront,
+                onChanged: (value) => adharfront = value,
+                // readOnly: true,
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+
                 textCapitalization: TextCapitalization.characters,
+                maxLength: 12,
                 autofocus: false,
                 decoration: InputDecorations.buildInputDecoration_1(
-                    hint_text: "Adhar Front Side"),
+                        hint_text: "Adhar Number")
+                    .copyWith(counterText: ""),
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Container(
-              height: 36,
-              child: TextField(
-                controller: _adharBackController,
-                onTap: onTapAdharBack,
-                readOnly: true,
-                textCapitalization: TextCapitalization.characters,
-                autofocus: false,
-                decoration: InputDecorations.buildInputDecoration_1(
-                    hint_text: "Adhar Back Side"),
-              ),
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: 8.0),
+          //   child: Container(
+          //     height: 36,
+          //     child: TextField(
+          //       onChanged: (value) => adharback = value,
+          //       controller: _adharBackController,
+          //       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          //       // onTap: onTapAdharBack,
+          //       keyboardType: TextInputType.number,
+          //       // readOnly: true,
+          //       textCapitalization: TextCapitalization.characters,
+          //       autofocus: false,
+          //       decoration: InputDecorations.buildInputDecoration_1(
+          //           hint_text: "Adhar Back Side"),
+          //     ),
+          //   ),
+          // ),
           Padding(
             padding: const EdgeInsets.only(bottom: 4.0),
             child: Text(
@@ -2173,8 +2184,9 @@ class _RegistrationState extends State<Registration> {
               height: 36,
               child: TextField(
                 controller: _panCardController,
-                onTap: onTapPan,
-                readOnly: true,
+                onChanged: (value) => pan = value,
+                // onTap: onTapPan,
+                // readOnly: true,
                 textCapitalization: TextCapitalization.characters,
                 autofocus: false,
                 decoration: InputDecorations.buildInputDecoration_1(

@@ -1,6 +1,5 @@
 import 'package:active_ecommerce_flutter/app_config.dart';
 import 'package:active_ecommerce_flutter/data_model/addons_response.dart';
-import 'package:active_ecommerce_flutter/data_model/offline_wallet_recharge_response.dart';
 import 'package:active_ecommerce_flutter/repositories/api-request.dart';
 
 class AddonsRepository {

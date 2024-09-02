@@ -355,7 +355,7 @@ class _ProfileEditState extends State<ProfileEdit> {
           padding: const EdgeInsets.only(top: 30.0, bottom: 10),
           child: Center(
             child: Text(
-              LangText(context).local!.password_changes_ucf,
+              LangText(context).local.password_changes_ucf,
               style: TextStyle(
                 fontFamily: 'Public Sans',
                 fontSize: 16,

@@ -1,7 +1,5 @@
 import 'package:active_ecommerce_flutter/custom/box_decorations.dart';
 import 'package:active_ecommerce_flutter/custom/useful_elements.dart';
-import 'package:active_ecommerce_flutter/presenter/home_presenter.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:active_ecommerce_flutter/my_theme.dart';
 
@@ -13,7 +11,6 @@ import 'package:active_ecommerce_flutter/custom/toast_component.dart';
 import 'package:go_router/go_router.dart';
 import 'package:toast/toast.dart';
 import 'package:active_ecommerce_flutter/helpers/shared_value_helper.dart';
-import 'package:active_ecommerce_flutter/screens/main.dart';
 import 'package:active_ecommerce_flutter/providers/locale_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

@@ -294,7 +294,7 @@ class _UpdatePackageState extends State<UpdatePackage> {
                     Text(
                       packageProduct +
                           " " +
-                          LangText(context).local!.upload_limit_ucf,
+                          LangText(context).local.upload_limit_ucf,
                       style: TextStyle(
                           fontSize: 12, fontWeight: FontWeight.normal),
                     ),

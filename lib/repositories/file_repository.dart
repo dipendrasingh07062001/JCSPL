@@ -1,5 +1,4 @@
 import 'package:active_ecommerce_flutter/app_config.dart';
-import 'package:active_ecommerce_flutter/data_model/check_response_model.dart';
 import 'package:active_ecommerce_flutter/middlewares/banned_user.dart';
 import 'package:active_ecommerce_flutter/repositories/api-request.dart';
 import 'dart:convert';

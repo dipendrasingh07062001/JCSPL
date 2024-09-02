@@ -1,13 +1,11 @@
 import 'dart:convert';
 
 import 'package:active_ecommerce_flutter/app_config.dart';
-import 'package:active_ecommerce_flutter/data_model/check_response_model.dart';
 import 'package:active_ecommerce_flutter/data_model/common_response.dart';
 import 'package:active_ecommerce_flutter/data_model/customer_package_response.dart';
 import 'package:active_ecommerce_flutter/helpers/shared_value_helper.dart';
 import 'package:active_ecommerce_flutter/middlewares/banned_user.dart';
 import 'package:active_ecommerce_flutter/repositories/api-request.dart';
-import 'package:http/http.dart' as http;
 
 class CustomerPackageRepository {
   Future<CustomerPackageResponse> getList() async {

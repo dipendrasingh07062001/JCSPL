@@ -331,7 +331,7 @@ class _AuctionBiddedProductsState extends State<AuctionBiddedProducts> {
                                   action!,
                                   style: TextStyle(
                                       fontSize: 12,
-                                      color: isBuyable!
+                                      color: isBuyable
                                           ? MyTheme.white
                                           : MyTheme.accent_color),
                                 ),

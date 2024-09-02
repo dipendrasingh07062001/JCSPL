@@ -110,17 +110,15 @@ class _FlashDealListState extends State<FlashDealList> {
   String timeText(String txt, {default_length = 3}) {
     var blank_zeros = default_length == 3 ? "000" : "00";
     var leading_zeros = "";
-    if (txt != null) {
-      if (default_length == 3 && txt.length == 1) {
-        leading_zeros = "00";
-      } else if (default_length == 3 && txt.length == 2) {
-        leading_zeros = "0";
-      } else if (default_length == 2 && txt.length == 1) {
-        leading_zeros = "0";
-      }
+    if (default_length == 3 && txt.length == 1) {
+      leading_zeros = "00";
+    } else if (default_length == 3 && txt.length == 2) {
+      leading_zeros = "0";
+    } else if (default_length == 2 && txt.length == 1) {
+      leading_zeros = "0";
     }
-
-    var newtxt = (txt == null || txt == "" || txt == null.toString())
+  
+    var newtxt = (txt == "" || txt == null.toString())
         ? blank_zeros
         : txt;
 
@@ -451,7 +449,7 @@ class _FlashDealListState extends State<FlashDealList> {
               child: Row(
                 children: [
                   Text(
-                    LangText(context).local!.view_more_ucf,
+                    LangText(context).local.view_more_ucf,
                     style: TextStyle(fontSize: 10, color: MyTheme.grey_153),
                   ),
                   SizedBox(
@@ -526,7 +524,7 @@ class _FlashDealListState extends State<FlashDealList> {
               child: Row(
                 children: [
                   Text(
-                    LangText(context).local!.view_more_ucf,
+                    LangText(context).local.view_more_ucf,
                     style: TextStyle(fontSize: 10, color: MyTheme.grey_153),
                   ),
                   SizedBox(

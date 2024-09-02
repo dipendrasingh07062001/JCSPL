@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:active_ecommerce_flutter/app_config.dart';
-import 'package:active_ecommerce_flutter/data_model/check_response_model.dart';
 import 'package:active_ecommerce_flutter/data_model/refund_request_response.dart';
 import 'package:active_ecommerce_flutter/data_model/refund_request_send_response.dart';
 import 'package:active_ecommerce_flutter/helpers/shared_value_helper.dart';

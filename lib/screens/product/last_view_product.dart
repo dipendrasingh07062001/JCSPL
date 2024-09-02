@@ -75,7 +75,7 @@ class _LastViewProductState extends State<LastViewProduct> {
 
     if (_lastViewProducts.length == 0) {
       return Center(
-        child: Text(LangText(context).local!.no_data_is_available),
+        child: Text(LangText(context).local.no_data_is_available),
       );
     }
     return RefreshIndicator(

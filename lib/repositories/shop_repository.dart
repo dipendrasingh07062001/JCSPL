@@ -1,5 +1,4 @@
 import 'package:active_ecommerce_flutter/app_config.dart';
-import 'package:active_ecommerce_flutter/data_model/check_response_model.dart';
 import 'package:active_ecommerce_flutter/data_model/common_response.dart';
 import 'package:active_ecommerce_flutter/data_model/followed_sellers_response.dart';
 import 'package:active_ecommerce_flutter/helpers/system_config.dart';
@@ -7,7 +6,6 @@ import 'package:active_ecommerce_flutter/data_model/shop_response.dart';
 import 'package:active_ecommerce_flutter/data_model/shop_details_response.dart';
 import 'package:active_ecommerce_flutter/data_model/product_mini_response.dart';
 import 'package:active_ecommerce_flutter/repositories/api-request.dart';
-import 'package:flutter/foundation.dart';
 import 'package:active_ecommerce_flutter/helpers/shared_value_helper.dart';
 
 class ShopRepository {

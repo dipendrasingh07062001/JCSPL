@@ -318,7 +318,7 @@ class _PasswordOtpState extends State<PasswordOtp> {
               padding: const EdgeInsets.only(bottom: 16.0),
               child: Container(
                   width: _screen_width * (3 / 4),
-                  child: Text(LangText(context).local!.congratulations_ucf,
+                  child: Text(LangText(context).local.congratulations_ucf,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: MyTheme.accent_color,
@@ -331,7 +331,7 @@ class _PasswordOtpState extends State<PasswordOtp> {
                   width: _screen_width * (3 / 4),
                   child: Text(
                       LangText(context)
-                          .local!
+                          .local
                           .you_have_successfully_changed_your_password,
                       textAlign: TextAlign.center,
                       style: TextStyle(

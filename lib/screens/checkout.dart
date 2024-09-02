@@ -177,7 +177,7 @@ class _CheckoutState extends State<Checkout> {
     _shippingCostString = ". . .";
     _discountString = ". . .";
     _used_coupon_code = "";
-    _couponController.text = _used_coupon_code!;
+    _couponController.text = _used_coupon_code;
     _coupon_applied = false;
 
     setState(() {});
@@ -646,10 +646,10 @@ class _CheckoutState extends State<Checkout> {
                         Spacer(),
                         Text(
                           SystemConfig.systemCurrency != null
-                              ? _shippingCostString!.replaceAll(
+                              ? _shippingCostString.replaceAll(
                                   SystemConfig.systemCurrency!.code!,
                                   SystemConfig.systemCurrency!.symbol!)
-                              : _shippingCostString!,
+                              : _shippingCostString,
                           style: TextStyle(
                               color: MyTheme.font_grey,
                               fontSize: 14,

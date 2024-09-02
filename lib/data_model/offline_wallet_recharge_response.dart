@@ -6,7 +6,6 @@ import 'package:active_ecommerce_flutter/custom/device_info.dart';
 import 'package:active_ecommerce_flutter/data_model/message_response.dart';
 import 'package:active_ecommerce_flutter/repositories/api-request.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:one_context/one_context.dart';
 import 'dart:convert';
 

@@ -1,5 +1,4 @@
 import 'package:active_ecommerce_flutter/custom/btn.dart';
-import 'package:active_ecommerce_flutter/custom/device_info.dart';
 import 'package:active_ecommerce_flutter/custom/lang_text.dart';
 import 'package:active_ecommerce_flutter/my_theme.dart';
 import 'package:flutter/material.dart';

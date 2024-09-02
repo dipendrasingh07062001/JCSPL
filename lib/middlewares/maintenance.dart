@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'package:active_ecommerce_flutter/custom/device_info.dart';
-import 'package:active_ecommerce_flutter/helpers/auth_helper.dart';
 import 'package:active_ecommerce_flutter/middlewares/middleware.dart';
 import 'package:active_ecommerce_flutter/my_theme.dart';
-import 'package:active_ecommerce_flutter/screens/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:one_context/one_context.dart';
@@ -44,7 +42,7 @@ class MaintenanceMiddleware extends Middleware {
           return false;
         }
       }
-    } on Exception catch (e) {
+    } on Exception {
       // TODO
     }
     return true;

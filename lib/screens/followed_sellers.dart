@@ -40,10 +40,10 @@ class _FollowedSellersState extends State<FollowedSellers> {
   Future removedFollow(id) async {
     var shopResponse = await ShopRepository().followedRemove(id);
 
-    if (shopResponse.result!) {
+    if (shopResponse.result) {
       reset();
     }
-    ToastComponent.showDialog(shopResponse.message!);
+    ToastComponent.showDialog(shopResponse.message);
   }
 
   clearData() {
@@ -80,7 +80,7 @@ class _FollowedSellersState extends State<FollowedSellers> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          LangText(context).local!.followed_sellers_ucf,
+          LangText(context).local.followed_sellers_ucf,
           style: MyStyle.appBarStyle,
         ),
         backgroundColor: MyTheme.white,
@@ -124,7 +124,7 @@ class _FollowedSellersState extends State<FollowedSellers> {
         return Container(
           height: DeviceInfo(context).height,
           child: Center(
-            child: Text(LangText(context).local!.no_data_is_available),
+            child: Text(LangText(context).local.no_data_is_available),
           ),
         );
     } else {
@@ -212,7 +212,7 @@ class _FollowedSellersState extends State<FollowedSellers> {
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(16, 0, 16, 8),
                   child: Text(
-                    LangText(context).local!.unfollow_ucf,
+                    LangText(context).local.unfollow_ucf,
                     textAlign: TextAlign.left,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,

@@ -63,7 +63,7 @@ class _AuctionProductsDetailsState extends State<AuctionProductsDetails>
   Animation? _colorTween;
   late AnimationController _ColorAnimationController;
 
-  CarouselController _carouselController = CarouselController();
+  CarouselSliderController _carouselController = CarouselSliderController();
   late BuildContext loadingcontext;
 
   //init values

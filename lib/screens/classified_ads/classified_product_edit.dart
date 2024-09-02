@@ -179,7 +179,7 @@ class _ClassifiedProductEditState extends State<ClassifiedProductEdit> {
       ToastComponent.showDialog(LangText(context).local.location_required,
           gravity: Toast.center);
       return false;
-    } else if (tags!.isEmpty) {
+    } else if (tags.isEmpty) {
       ToastComponent.showDialog(LangText(context).local.product_tag_required,
           gravity: Toast.center);
       return false;
@@ -276,7 +276,7 @@ class _ClassifiedProductEditState extends State<ClassifiedProductEdit> {
     // print(postBody);
 
     Loading.close();
-    if (response.result != null && response.result!) {
+    if (response.result) {
       ToastComponent.showDialog(response.message, gravity: Toast.center);
 
       Navigator.pop(context);
@@ -1050,9 +1050,9 @@ class _ClassifiedProductEditState extends State<ClassifiedProductEdit> {
                         alignment: Alignment.bottomRight,
                         child: TextButton(
                             style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
+                              backgroundColor: WidgetStateProperty.all(
                                   MyTheme.accent_color),
-                              shape: MaterialStateProperty.all<
+                              shape: WidgetStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(6.0),
@@ -1166,7 +1166,6 @@ class _ClassifiedProductEditState extends State<ClassifiedProductEdit> {
     List<CommonDropDownItem> itemList, {
     bool isMandatory = false,
     double? width,
-    focus = false,
   }) {
     return buildCommonSingleField(
         title, _buildDropDown(onchange, selectedValue, itemList, width: width),
@@ -1180,7 +1179,6 @@ class _ClassifiedProductEditState extends State<ClassifiedProductEdit> {
     List<CommonDropDownItemWithChild> itemList, {
     bool isMandatory = false,
     double? width,
-    focus = false,
   }) {
     return buildCommonSingleField(
         title,
@@ -1325,8 +1323,8 @@ class _ClassifiedProductEditState extends State<ClassifiedProductEdit> {
           crossAxisAlignment: WrapCrossAlignment.center,
           runAlignment: WrapAlignment.start,
           clipBehavior: Clip.antiAlias,
-          children: List.generate(tags!.length + 1, (index) {
-            if (index == tags!.length) {
+          children: List.generate(tags.length + 1, (index) {
+            if (index == tags.length) {
               return TextField(
                 onSubmitted: (string) {
                   var tag = textEditingController.text
@@ -1370,7 +1368,7 @@ class _ClassifiedProductEditState extends State<ClassifiedProductEdit> {
                         constraints: BoxConstraints(
                             maxWidth: (DeviceInfo(context).width! - 50) / 4),
                         child: Text(
-                          tags![index].toString(),
+                          tags[index].toString(),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(fontSize: 12),
@@ -1379,7 +1377,7 @@ class _ClassifiedProductEditState extends State<ClassifiedProductEdit> {
                       right: 2,
                       child: InkWell(
                         onTap: () {
-                          tags!.removeAt(index);
+                          tags.removeAt(index);
                           setChange();
                         },
                         child: Icon(Icons.highlight_remove,
@@ -1397,7 +1395,7 @@ class _ClassifiedProductEditState extends State<ClassifiedProductEdit> {
 
   addTag(String string) {
     if (string.trim().isNotEmpty) {
-      tags!.add(string.trim());
+      tags.add(string.trim());
     }
     tagEditTextController.clear();
     setChange();

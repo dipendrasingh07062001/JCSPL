@@ -1,5 +1,4 @@
 import 'package:active_ecommerce_flutter/app_config.dart';
-import 'package:active_ecommerce_flutter/data_model/check_response_model.dart';
 import 'package:active_ecommerce_flutter/data_model/profile_image_update_response.dart';
 import 'package:active_ecommerce_flutter/data_model/user_info_response.dart';
 import 'dart:convert';
@@ -10,7 +9,6 @@ import 'package:active_ecommerce_flutter/data_model/phone_email_availability_res
 
 import 'package:active_ecommerce_flutter/helpers/shared_value_helper.dart';
 import 'package:active_ecommerce_flutter/repositories/api-request.dart';
-import 'package:flutter/foundation.dart';
 
 class ProfileRepository {
 
